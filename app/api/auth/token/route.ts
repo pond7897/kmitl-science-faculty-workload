@@ -29,13 +29,16 @@ export async function GET(request: Request) {
   const result = await response.json();
 
   const redirectUrl = new URL("/api/auth/user", origin);
+  const accessToken = result?.data?.access_token;
+  const errorMessage = result?.data?.error || result?.error;
 
-  if (result?.data?.success && result?.data?.access_token) {
-    redirectUrl.searchParams.set("access_token", result.data.access_token);
-  } else if (result?.data?.error || result?.error) {
-    redirectUrl.searchParams.set("error", result.data?.error || result.error);
+  if (result?.data?.success && accessToken) {
+    redirectUrl.searchParams.set("access_token", accessToken);
   } else {
-    redirectUrl.searchParams.set("error", "Failed to get access token");
+    redirectUrl.searchParams.set(
+      "error",
+      errorMessage || "Failed to get access token"
+    );
   }
 
   return NextResponse.redirect(redirectUrl.toString());
