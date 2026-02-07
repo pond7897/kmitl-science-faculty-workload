@@ -7,13 +7,7 @@ export default function LoginButton() {
   const t = useTranslations('LoginPage');
   
   const handleLogin = () => {
-    const url = new URL("https://portal.science.kmitl.ac.th/o/oauth2/auth");
-    url.searchParams.set("response_type", "code");
-    url.searchParams.set("client_id", "YOUR_CLIENT_ID");
-    url.searchParams.set("redirect_uri", "http://localhost:3000/auth/callback");
-    url.searchParams.set("scope", "read:userinfo read:profile");
-    url.searchParams.set("state", "random_string");
-    window.location.href = url.toString();
+    window.location.href = '/api/auth/login';
   };
 
   return (
