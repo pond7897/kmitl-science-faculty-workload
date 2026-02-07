@@ -8,5 +8,5 @@ export async function GET(request: Request) {
   url.searchParams.set("scope", "read:userinfo,read:profile");
   url.searchParams.set("state", process.env.OAUTH_STATE!);
 
-  return NextResponse.redirect(url.toString());
+  return NextResponse.redirect(url.toString(), 302);
 }
