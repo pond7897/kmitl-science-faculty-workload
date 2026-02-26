@@ -3,6 +3,7 @@
     "title": "Login",
     "subtitle": "Select your sign-in method",
     "signInWithGoogle": "Sign in with Google",
+    "signIn": "Click here to sign in",
     "privacyPolicy": "Privacy Policy",
     "language": "Language"
   },

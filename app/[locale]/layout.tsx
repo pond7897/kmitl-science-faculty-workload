@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Thai } from "next/font/google";
+import { Anuphan } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/lib/i18n/routing';
 
-const notoSansThai = Noto_Sans_Thai({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+const anuphan = Anuphan({
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
   subsets: ["thai", "latin"],
-  variable: "--font-noto-sans-thai",
+  variable: "--font-anuphan",
   display: "swap",
 });
 
@@ -40,7 +40,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale}>
-      <body className={`${notoSansThai.variable} antialiased font-sans`}>
+      <body className={`${anuphan.variable} antialiased font-sans`}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
