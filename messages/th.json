@@ -7,6 +7,13 @@
     "privacyPolicy": "นโยบายความเป็นส่วนตัว",
     "language": "ภาษา"
   },
+  "Sidebar": {
+    "dashboard": "แดช์บอร์ด",
+    "workloadForm": "กรอกข้อมูลภาระงาน",
+    "workloadHistory": "ประวัติภาระงาน",
+    "profile": "ข้อมูลส่วนตัว",
+    "logout": "ออกจากระบบ"
+  },
   "Languages": {
     "english": "English",
     "thai": "ภาษาไทย"
