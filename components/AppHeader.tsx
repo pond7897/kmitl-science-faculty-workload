@@ -18,7 +18,7 @@ export function AppHeader({ userInfo, breadcrumb }: AppHeaderProps) {
     <header className="sticky top-0 z-50 flex items-center justify-between bg-[#F27F0D] px-4 py-3 shadow-md">
       {/* Left Section: Sidebar Trigger + Logo + Breadcrumb */}
       <div className="flex items-center gap-3">
-        <SidebarTrigger className="text-white hover:bg-orange-600 rounded-lg" />
+        <SidebarTrigger className="text-white hover:bg-amber-600 rounded-lg" />
         
         <div className="flex items-center gap-2 bg-white/20 rounded-lg px-3 py-1.5">
           <ClipboardList className="w-5 h-5 text-white" />
