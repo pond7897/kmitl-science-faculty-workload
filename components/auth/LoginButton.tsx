@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useTranslations } from 'next-intl';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginButton() {
-  const t = useTranslations('LoginPage');
-  
+  const { t } = useTranslation();
+
   const handleLogin = () => {
     window.location.href = '/api/auth/login';
   };
@@ -17,7 +17,7 @@ export default function LoginButton() {
       size="default"
     >
       <div className="flex items-center justify-center gap-2 w-full">
-        <span>{t('signIn')}</span>
+        <span>{t('LoginPage.signIn')}</span>
       </div>
     </Button>
   );

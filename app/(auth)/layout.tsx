@@ -5,10 +5,6 @@ type Props = {
   children: React.ReactNode;
 };
 
-/**
- * Layout for unauthenticated pages (e.g. login).
- * Redirects logged-in users straight to dashboard.
- */
 export default async function AuthLayout({ children }: Props) {
   const authenticated = await isAuthenticated();
 

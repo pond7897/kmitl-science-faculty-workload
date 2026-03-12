@@ -8,10 +8,6 @@ type Props = {
   children: React.ReactNode;
 };
 
-/**
- * Layout for all authenticated (protected) pages.
- * Redirects to login if the user has no valid session.
- */
 export default async function ProtectedLayout({ children }: Props) {
   const session = await getAuthSession();
 

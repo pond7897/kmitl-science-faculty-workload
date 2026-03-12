@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Anuphan } from "next/font/google";
 import "./globals.css";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/lib/i18n/routing';
+import { I18nProvider } from "@/components/providers/I18nProvider";
 
 const anuphan = Anuphan({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -18,26 +15,13 @@ export const metadata: Metadata = {
   description: "คณะวิทยาศาสตร์ สจล.",
 };
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
-type Props = {
+export default function RootLayout({
+  children,
+}: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-};
-
-export default async function LocaleLayout({ children, params }: Props) {
-  const { locale } = await params;
-
-  if (!routing.locales.includes(locale as 'en' | 'th')) {
-    notFound();
-  }
-
-  const messages = await getMessages();
-
+}) {
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang="th" suppressHydrationWarning>
       <head>
         {/* Sync dark class before first paint to prevent flash */}
         <script
@@ -47,9 +31,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
       </head>
       <body className={`${anuphan.variable} antialiased font-sans`}>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
   );

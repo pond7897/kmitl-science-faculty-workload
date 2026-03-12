@@ -1,6 +1,12 @@
 import { redirect } from 'next/navigation';
-import { routing } from '@/lib/i18n/routing';
+import { isAuthenticated } from '@/lib/auth/session';
 
-export default function RootPage() {
-  redirect(`/${routing.defaultLocale}`);
+export default async function RootPage() {
+  const authenticated = await isAuthenticated();
+
+  if (authenticated) {
+    redirect('/dashboard');
+  }
+
+  redirect('/login');
 }

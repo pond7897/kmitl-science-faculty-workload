@@ -18,5 +18,23 @@
     "english": "English",
     "thai": "ภาษาไทย",
     "language": "Language"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "overview": "Your workload overview",
+    "totalWorkload": "Total Workload",
+    "pendingWorkload": "Pending Workload",
+    "approvedWorkload": "Approved Workload"
+  },
+  "Profile": {
+    "title": "Personal Info",
+    "detail": "User Details",
+    "firstnameTh": "First Name (Thai)",
+    "lastnameTh": "Last Name (Thai)",
+    "firstnameEn": "First Name (English)",
+    "lastnameEn": "Last Name (English)",
+    "position": "Position",
+    "email": "Email",
+    "welcome": "Welcome"
   }
 }

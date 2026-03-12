@@ -18,5 +18,23 @@
     "english": "English",
     "thai": "ภาษาไทย",
     "language": "ภาษา"
+  },
+  "Dashboard": {
+    "title": "แดชบอร์ด",
+    "overview": "ภาพรวมภาระงานของคุณ",
+    "totalWorkload": "ภาระงานทั้งหมด",
+    "pendingWorkload": "ภาระงานรอการอนุมัติ",
+    "approvedWorkload": "ภาระงานที่อนุมัติแล้ว"
+  },
+  "Profile": {
+    "title": "ข้อมูลส่วนตัว",
+    "detail": "รายละเอียดผู้ใช้",
+    "firstnameTh": "ชื่อ (ภาษาไทย)",
+    "lastnameTh": "นามสกุล (ภาษาไทย)",
+    "firstnameEn": "ชื่อ (English)",
+    "lastnameEn": "นามสกุล (English)",
+    "position": "ตำแหน่ง",
+    "email": "อีเมล",
+    "welcome": "ยินดีต้อนรับ"
   }
 }

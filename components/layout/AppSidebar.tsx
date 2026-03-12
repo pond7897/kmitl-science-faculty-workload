@@ -1,7 +1,7 @@
 'use client';
 
-import { usePathname } from '@/lib/i18n/routing';
-import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import {
   LayoutDashboard,
@@ -31,7 +31,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const t = useTranslations('Sidebar');
+  const { t } = useTranslation();
   const { state } = useSidebar();
 
   const isActive = (href: string) =>
@@ -54,7 +54,6 @@ export function AppSidebar() {
             ${isCollapsed ? 'w-11 h-11 mx-auto' : 'w-full h-12 px-4'}
           `}
         >
-          {/* subtle shine overlay */}
           <div className="absolute inset-0 bg-linear-to-b from-white/10 to-transparent pointer-events-none" />
           {isCollapsed ? (
             <Image
@@ -95,7 +94,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   asChild
                   isActive={active}
-                  tooltip={t(item.key)}
+                  tooltip={t(`Sidebar.${item.key}`)}
                   className={`
                     relative h-11 rounded-md transition-all duration-200
                     text-[#C46A00] dark:text-sidebar-foreground
@@ -123,7 +122,7 @@ export function AppSidebar() {
                       className="shrink-0"
                     />
                     <span className="text-[14.5px] tracking-wide group-data-[collapsible=icon]:hidden">
-                      {t(item.key)}
+                      {t(`Sidebar.${item.key}`)}
                     </span>
                   </Link>
                 </SidebarMenuButton>
@@ -142,7 +141,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              tooltip={t('logout')}
+              tooltip={t('Sidebar.logout')}
               className={`
                 h-11 rounded-sm font-semibold transition-all duration-200
                 bg-[#F27F0D] dark:bg-primary
@@ -163,7 +162,7 @@ export function AppSidebar() {
                 className="flex items-center justify-center gap-2"
               >
                 <span className="text-[14.5px] tracking-wide group-data-[collapsible=icon]:hidden">
-                  {t('logout')}
+                  {t('Sidebar.logout')}
                 </span>
                 <LogOut size={18} className="shrink-0" />
               </Link>

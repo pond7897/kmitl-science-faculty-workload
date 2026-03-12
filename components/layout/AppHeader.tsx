@@ -1,8 +1,8 @@
 'use client';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useTranslations } from 'next-intl';
-import { usePathname } from '@/lib/i18n/routing';
+import { useTranslation } from 'react-i18next';
+import { usePathname } from 'next/navigation';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
 import Image from 'next/image';
@@ -16,15 +16,14 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ userInfo }: AppHeaderProps) {
-  const t = useTranslations('Sidebar');
+  const { t } = useTranslation();
   const pathname = usePathname();
 
-  // Derive breadcrumb label from current route
   const breadcrumbMap: Record<string, string> = {
-    '/dashboard': t('dashboard'),
-    '/workload/form': t('workloadForm'),
-    '/workload/history': t('workloadHistory'),
-    '/profile': t('profile'),
+    '/dashboard': t('Sidebar.dashboard'),
+    '/workload/form': t('Sidebar.workloadForm'),
+    '/workload/history': t('Sidebar.workloadHistory'),
+    '/profile': t('Sidebar.profile'),
   };
 
   const breadcrumb =
