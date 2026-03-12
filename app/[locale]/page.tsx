@@ -1,15 +1,12 @@
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
+import { isAuthenticated } from '@/lib/auth/session';
 
-export default async function Home() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('access_token');
-  
-  // If user is already logged in, redirect to dashboard
-  if (accessToken) {
-    redirect('/profile');
+export default async function LocaleHomePage() {
+  const authenticated = await isAuthenticated();
+
+  if (authenticated) {
+    redirect('/dashboard');
   }
-  
-  // Otherwise, redirect to login
-  redirect('/api/auth/login');
+
+  redirect('/login');
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { oauthConfig } from "@/lib/config/oauth";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -11,21 +12,17 @@ export async function GET(request: Request) {
     );
   }
 
-  // Build redirect_uri (same as in login route)
   const redirectUri = `${origin}/auth/callback`;
 
-  const tokenUrl = new URL("https://api.science.kmitl.ac.th/iam/oauth2/token");
-  const response = await fetch(tokenUrl.toString(), {
+  const response = await fetch(oauthConfig.tokenUrl, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       grant_type: "authorization_code",
-      client_id: process.env.OAUTH_CLIENT_ID!,
+      client_id: oauthConfig.clientId,
       redirect_uri: redirectUri,
       code,
-      client_secret: process.env.OAUTH_CLIENT_SECRET!,
+      client_secret: oauthConfig.clientSecret,
     }),
   });
 
