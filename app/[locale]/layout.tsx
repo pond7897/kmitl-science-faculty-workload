@@ -29,13 +29,11 @@ type Props = {
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
-  
-  // Ensure that the incoming `locale` is valid
+
   if (!routing.locales.includes(locale as 'en' | 'th')) {
     notFound();
   }
 
-  // Providing all messages to the client
   const messages = await getMessages();
 
   return (

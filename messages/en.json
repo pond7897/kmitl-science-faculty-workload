@@ -7,6 +7,13 @@
     "privacyPolicy": "Privacy Policy",
     "language": "Language"
   },
+  "Sidebar": {
+    "dashboard": "Dashboard",
+    "workloadForm": "Workload Form",
+    "workloadHistory": "Workload History",
+    "profile": "Personal Info",
+    "logout": "Logout"
+  },
   "Languages": {
     "english": "English",
     "thai": "ภาษาไทย"

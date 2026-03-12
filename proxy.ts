@@ -32,5 +32,6 @@ export const config = {
   // - Static files (_next/static)
   // - Image optimization files (_next/image)
   // - Favicon
-  matcher: ['/((?!api|auth|_next/static|_next/image|favicon.ico).*)']
+  // - Public images folder
+  matcher: ['/((?!api|auth|_next/static|_next/image|favicon.ico|images).*)']
 };
