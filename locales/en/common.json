@@ -32,10 +32,10 @@
     "activeCourses": "Current Courses",
     "courseUnit": "courses",
     "latestSubmission": "Latest Submission Status",
-    "statusPending": "Pending Approval",
-    "statusApproved": "Approved",
+    "statusPending": "Pending Dean Approval",
+    "statusApproved": "Submitted Successfully",
     "statusRejected": "Rejected",
-    "statusProcessing": "Processing",
+    "statusProcessing": "Dept. Head Approved",
     "totalWorkload": "Total Workload",
     "pendingWorkload": "Pending Workload",
     "approvedWorkload": "Approved Workload",
@@ -44,6 +44,13 @@
     "noSubmissions": "No submissions yet",
     "noSubmissionsHint": "Once you submit a workload report, the status will appear here.",
     "submissionTeachingHours": "{{hours}} hrs. of teaching"
+  },
+  "Notifications": {
+    "title": "HR Updates",
+    "new": "New",
+    "clearAll": "Clear All Notifications",
+    "empty": "No notifications",
+    "emptyHint": "New notifications will appear here"
   },
   "Profile": {
     "title": "Personal Info",
