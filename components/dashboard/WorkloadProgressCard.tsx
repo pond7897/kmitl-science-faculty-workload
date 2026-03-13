@@ -3,6 +3,7 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface WorkloadProgressCardProps {
   current: number;
@@ -48,13 +49,13 @@ interface SubMetricProps {
 function SubMetric({ label, value, unit, loading }: SubMetricProps) {
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-xs text-gray-500 dark:text-gray-400 leading-tight">{label}</p>
+      <p className="text-elder-xs text-gray-500 dark:text-gray-400 leading-tight">{label}</p>
       {loading ? (
         <Skeleton className="h-5 w-16" />
       ) : (
-        <p className="text-lg sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
+        <p className="text-elder-lg sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
           {value}{' '}
-          <span className="text-xs sm:text-sm font-base text-gray-500 dark:text-gray-400">{unit}</span>
+          <span className="text-elder-xs sm:text-sm font-base text-gray-500 dark:text-gray-400">{unit}</span>
         </p>
       )}
     </div>
@@ -75,44 +76,46 @@ export function WorkloadProgressCard({
   const unitShort = t('Dashboard.hoursUnitShort');
 
   return (
-    <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-gray-100 dark:border-gray-700 p-4 sm:p-6 shadow-sm col-span-full">
-      {/* Title */}
-      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1">
-        {t('Dashboard.teachingHours')}
-      </p>
-
-      {/* Current / Target */}
-      <div className="flex items-end gap-2 mb-4">
-        {loading ? (
-          <Skeleton className="h-12 w-32" />
-        ) : (
-          <>
-            <span className="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white leading-none">
-              {current}
-            </span>
-            <span className="text-base sm:text-xl font-bold text-gray-400 dark:text-gray-500 mb-0.5 sm:mb-1">
-              / {target} {unit}
-            </span>
-          </>
-        )}
-      </div>
-
-      {/* Progress bar */}
-      <AnimatedBar percent={percent} loading={loading} />
-
-      {/* Percent label */}
-      {!loading && (
-        <p className="text-xs text-right text-gray-400 dark:text-gray-500 mt-1">
-          {percent.toFixed(1)}%
+    <Card className="bg-white dark:bg-[#2a2a2a] rounded-2xl border-gray-100 dark:border-gray-700 shadow-sm col-span-full py-0">
+      <CardContent className="p-4 sm:p-6">
+        {/* Title */}
+        <p className="text-elder-sm font-bold text-gray-500 dark:text-gray-400 mb-1">
+          {t('Dashboard.teachingHours')}
         </p>
-      )}
 
-      {/* Sub-metrics */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-gray-100 dark:border-gray-700 font-semibold">
-        <SubMetric label={t('Dashboard.lectureHours')} value={lectureHours} unit={unitShort} loading={loading} />
-        <SubMetric label={t('Dashboard.labHours')} value={labHours} unit={unitShort} loading={loading} />
-        <SubMetric label={t('Dashboard.adminWork')} value={adminHours} unit={unitShort} loading={loading} />
-      </div>
-    </div>
+        {/* Current / Target */}
+        <div className="flex items-end gap-2 mb-4">
+          {loading ? (
+            <Skeleton className="h-12 w-32" />
+          ) : (
+            <>
+              <span className="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white leading-none">
+                {current}
+              </span>
+              <span className="text-base sm:text-xl font-bold text-gray-400 dark:text-gray-500 mb-0.5 sm:mb-1">
+                / {target} {unit}
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* Progress bar */}
+        <AnimatedBar percent={percent} loading={loading} />
+
+        {/* Percent label */}
+        {!loading && (
+          <p className="text-elder-xs text-right text-gray-400 dark:text-gray-500 mt-1">
+            {percent.toFixed(1)}%
+          </p>
+        )}
+
+        {/* Sub-metrics */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-gray-100 dark:border-gray-700 font-semibold">
+          <SubMetric label={t('Dashboard.lectureHours')} value={lectureHours} unit={unitShort} loading={loading} />
+          <SubMetric label={t('Dashboard.labHours')} value={labHours} unit={unitShort} loading={loading} />
+          <SubMetric label={t('Dashboard.adminWork')} value={adminHours} unit={unitShort} loading={loading} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }

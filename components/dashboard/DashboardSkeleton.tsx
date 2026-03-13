@@ -36,6 +36,23 @@ export function DashboardSkeleton() {
           </div>
         ))}
       </div>
+
+      {/* Recent submissions card */}
+      <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="flex items-center justify-between gap-3 py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+            <Skeleton className="h-6 w-28 rounded-full" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

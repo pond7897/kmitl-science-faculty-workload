@@ -39,7 +39,12 @@
     "statusProcessing": "กำลังดำเนินการ",
     "totalWorkload": "ภาระงานทั้งหมด",
     "pendingWorkload": "ภาระงานรอการอนุมัติ",
-    "approvedWorkload": "ภาระงานที่อนุมัติแล้ว"
+    "approvedWorkload": "ภาระงานที่อนุมัติแล้ว",
+    "recentSubmissions": "การอนุมัติล่าสุด",
+    "viewAll": "ดูทั้งหมด",
+    "noSubmissions": "ยังไม่มีการส่งภาระงาน",
+    "noSubmissionsHint": "เมื่อคุณส่งภาระงาน สถานะจะแสดงที่นี่",
+    "submissionTeachingHours": "จำนวนภาระงานสอน {{hours}} ชั่วโมง"
   },
   "Profile": {
     "title": "ข้อมูลส่วนตัว",

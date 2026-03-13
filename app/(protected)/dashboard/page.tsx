@@ -5,6 +5,7 @@ import { useDashboardData } from '@/hooks/use-dashboard-data';
 import { WorkloadProgressCard } from '@/components/dashboard/WorkloadProgressCard';
 import { ActiveCoursesCard } from '@/components/dashboard/ActiveCoursesCard';
 import { LatestSubmissionCard } from '@/components/dashboard/LatestSubmissionCard';
+import { RecentSubmissionsCard } from '@/components/dashboard/RecentSubmissionsCard';
 import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 
 export default function DashboardPage() {
@@ -38,10 +39,17 @@ export default function DashboardPage() {
       />
 
       {/* Bottom row: active courses + latest submission */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <ActiveCoursesCard count={data?.activeCourses ?? 0} loading={loading} />
         <LatestSubmissionCard status={data?.latestStatus ?? null} loading={loading} />
       </div>
+
+      {/* Recent submissions list */}
+      <RecentSubmissionsCard
+        submissions={data?.recentSubmissions ?? []}
+        loading={loading}
+        nowMs={data?.fetchedAt ?? 0}
+      />
     </div>
   );
 }
