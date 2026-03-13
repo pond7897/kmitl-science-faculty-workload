@@ -22,7 +22,7 @@ export default async function ProtectedLayout({ children }: Props) {
       <AppSidebar />
       <div className="flex-1 flex flex-col min-h-screen w-full bg-[#F9F4EE] dark:bg-[#1a1a1a]">
         <AppHeader userInfo={user ?? undefined} />
-        <main className="flex-1 p-4">
+        <main className="flex-1 p-3 sm:p-4">
           {children}
         </main>
       </div>

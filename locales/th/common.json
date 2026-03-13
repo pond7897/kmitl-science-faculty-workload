@@ -8,7 +8,7 @@
     "language": "ภาษา"
   },
   "Sidebar": {
-    "dashboard": "แดช์บอร์ด",
+    "dashboard": "แดชบอร์ด",
     "workloadForm": "กรอกข้อมูลภาระงาน",
     "workloadHistory": "ประวัติภาระงาน",
     "profile": "ข้อมูลส่วนตัว",
@@ -20,8 +20,23 @@
     "language": "ภาษา"
   },
   "Dashboard": {
-    "title": "แดชบอร์ด",
-    "overview": "ภาพรวมภาระงานของคุณ",
+    "title": "ยินดีต้อนรับ",
+    "overview": "ภาพรวมภาระงานประจำ ปีการศึกษา 2568",
+    "teachingHours": "ภาระงานสอนรายปี",
+    "currentTarget": "ปัจจุบัน / เป้าหมาย",
+    "hoursUnit": "ชั่วโมง",
+    "hoursUnitShort": "ชม.",
+    "lectureHours": "ชั่วโมงบรรยาย",
+    "labHours": "ชั่วโมงปฏิบัติ",
+    "adminWork": "งานบริหาร",
+    "activeCourses": "วิชาในปัจจุบัน",
+    "courseUnit": "วิชา",
+    "latestSubmission": "สถานะการส่งล่าสุด",
+    "statusPending": "รอคณบดีอนุมัติ",
+    "statusApproved": "อนุมัติแล้ว",
+    "statusDraft": "ร่าง",
+    "statusRejected": "ไม่อนุมัติ",
+    "statusProcessing": "กำลังดำเนินการ",
     "totalWorkload": "ภาระงานทั้งหมด",
     "pendingWorkload": "ภาระงานรอการอนุมัติ",
     "approvedWorkload": "ภาระงานที่อนุมัติแล้ว"

@@ -4,8 +4,15 @@ export interface UserProfile {
     lastname_en: string;
     firstname_th: string;
     lastname_th: string;
-    position_en: string;
-    position_th: string;
+    title?: string;
+    spacial_title?: string;
+    position_en?: string;
+    position_th?: string;
+    department?: {
+      id: string;
+      name_th: string;
+      name_en: string;
+    };
     avatar_url?: string;
     email?: string;
   };
@@ -15,6 +22,8 @@ export interface UserProfile {
 export interface UserInfo {
   data: {
     email: string;
+    role?: string;
+    avatar?: string | null;
     [key: string]: unknown;
   };
 }
@@ -25,7 +34,9 @@ export interface AuthSession {
 }
 
 export interface AppUser {
-  name: string;
-  role: string;
+  name_en: string;
+  name_th: string;
+  role_en: string;
+  role_th: string;
   avatar?: string;
 }
