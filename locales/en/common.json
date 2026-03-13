@@ -34,12 +34,16 @@
     "latestSubmission": "Latest Submission Status",
     "statusPending": "Pending Approval",
     "statusApproved": "Approved",
-    "statusDraft": "Draft",
     "statusRejected": "Rejected",
     "statusProcessing": "Processing",
     "totalWorkload": "Total Workload",
     "pendingWorkload": "Pending Workload",
-    "approvedWorkload": "Approved Workload"
+    "approvedWorkload": "Approved Workload",
+    "recentSubmissions": "Recent Submissions",
+    "viewAll": "View All",
+    "noSubmissions": "No submissions yet",
+    "noSubmissionsHint": "Once you submit a workload report, the status will appear here.",
+    "submissionTeachingHours": "{{hours}} hrs. of teaching"
   },
   "Profile": {
     "title": "Personal Info",

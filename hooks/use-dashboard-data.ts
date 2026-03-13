@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import type { SubmissionStatus } from '@/components/dashboard/LatestSubmissionCard';
 
+export interface Submission {
+  id: string;
+  title: string;
+  status: SubmissionStatus;
+  submittedAt: Date;
+  teachingHours: number;
+}
+
 export interface DashboardData {
   currentHours: number;
   targetHours: number;
@@ -9,6 +17,9 @@ export interface DashboardData {
   adminHours: number;
   activeCourses: number;
   latestStatus: SubmissionStatus | null;
+  recentSubmissions: Submission[];
+  /** Timestamp (ms) captured when this data was fetched — used for stable relative-time display. */
+  fetchedAt: number;
 }
 
 /**
@@ -32,6 +43,7 @@ export function useDashboardData() {
 
         // ---- Mock data (remove when API is ready) ----
         await new Promise((r) => setTimeout(r, 1200));
+        const now = new Date();
         const mock: DashboardData = {
           currentHours: 140,
           targetHours: 180,
@@ -39,7 +51,45 @@ export function useDashboardData() {
           labHours: 8,
           adminHours: 0,
           activeCourses: 4,
-          latestStatus: 'approved',
+          latestStatus: 'pending',
+          fetchedAt: now.getTime(),
+          recentSubmissions: [
+            {
+              id: '1',
+              title: 'ภาระงาน ปีการศึกษา 2568 ภาคเรียนที่ 1',
+              status: 'pending',
+              submittedAt: new Date(now.getTime() - 5 * 60 * 1000),
+              teachingHours: 140,
+            },
+            {
+              id: '2',
+              title: 'ภาระงาน ปีการศึกษา 2568 ภาคเรียนที่ 1',
+              status: 'processing',
+              submittedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+              teachingHours: 120,
+            },
+            {
+              id: '3',
+              title: 'ภาระงาน ปีการศึกษา 2568 ภาคเรียนที่ 1',
+              status: 'approved',
+              submittedAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
+              teachingHours: 180,
+            },
+            {
+              id: '4',
+              title: 'ภาระงาน ปีการศึกษา 2567 ภาคเรียนที่ 2',
+              status: 'rejected',
+              submittedAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+              teachingHours: 95,
+            },
+            {
+              id: '5',
+              title: 'ภาระงาน ปีการศึกษา 2567 ภาคเรียนที่ 1',
+              status: 'approved',
+              submittedAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+              teachingHours: 60,
+            },
+          ],
         };
         // -----------------------------------------------
 
