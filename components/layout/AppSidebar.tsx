@@ -21,6 +21,7 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { useNotifications } from '@/hooks/use-notifications';
 
 const menuItems = [
   { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -33,6 +34,7 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { state } = useSidebar();
+  const { unreadCount } = useNotifications();
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + '/');
@@ -116,11 +118,17 @@ export function AppSidebar() {
                   `}
                 >
                   <Link href={item.href} className="flex items-center gap-3 w-full px-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
-                    <Icon
-                      size={19}
-                      strokeWidth={active ? 2.5 : 1.8}
-                      className="shrink-0"
-                    />
+                    <div className="relative shrink-0">
+                      <Icon
+                        size={19}
+                        strokeWidth={active ? 2.5 : 1.8}
+                      />
+                      {item.key === 'dashboard' && unreadCount > 0 && (
+                        <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 rounded-full bg-[#F27F0D] text-white text-[9px] font-bold flex items-center justify-center px-0.5 leading-none shadow-sm">
+                          {unreadCount > 9 ? '9+' : unreadCount}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-[14.5px] tracking-wide group-data-[collapsible=icon]:hidden">
                       {t(`Sidebar.${item.key}`)}
                     </span>

@@ -273,7 +273,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      {open ? <PanelRightOpen className="size-5" /> : <PanelRightClose className="size-5" />}
+      {open ? <PanelRightOpen className="size-6" /> : <PanelRightClose className="size-6" />}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )

@@ -17,29 +17,29 @@ const statusConfig: Record<
   SubmissionStatus,
   { labelKey: string; dotColor: string; textColor: string; icon: React.ElementType }
 > = {
-  pending: {
-    labelKey: 'Dashboard.statusPending',
-    dotColor: 'bg-amber-400',
-    textColor: 'text-gray-900 dark:text-white',
-    icon: Clock,
-  },
   approved: {
     labelKey: 'Dashboard.statusApproved',
+    dotColor: 'bg-blue-500',
+    textColor: 'text-blue-700 dark:text-blue-400',
+    icon: SendHorizonal,
+  },
+  processing: {
+    labelKey: 'Dashboard.statusProcessing',
     dotColor: 'bg-green-500',
-    textColor: 'text-gray-900 dark:text-white',
+    textColor: 'text-green-700 dark:text-green-400',
     icon: CheckCircle2,
+  },
+  pending: {
+    labelKey: 'Dashboard.statusPending',
+    dotColor: 'bg-orange-400',
+    textColor: 'text-orange-700 dark:text-orange-400',
+    icon: Clock,
   },
   rejected: {
     labelKey: 'Dashboard.statusRejected',
     dotColor: 'bg-red-500',
-    textColor: 'text-gray-900 dark:text-white',
+    textColor: 'text-red-600 dark:text-red-400',
     icon: XCircle,
-  },
-  processing: {
-    labelKey: 'Dashboard.statusProcessing',
-    dotColor: 'bg-blue-400',
-    textColor: 'text-gray-900 dark:text-white',
-    icon: SendHorizonal,
   },
 };
 

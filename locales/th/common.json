@@ -33,9 +33,9 @@
     "courseUnit": "วิชา",
     "latestSubmission": "สถานะการส่งล่าสุด",
     "statusPending": "รอคณบดีอนุมัติ",
-    "statusApproved": "อนุมัติแล้ว",
+    "statusApproved": "ส่งเรื่องสำเร็จ",
     "statusRejected": "ไม่อนุมัติ",
-    "statusProcessing": "กำลังดำเนินการ",
+    "statusProcessing": "หัวหน้าภาคอนุมัติแล้ว",
     "totalWorkload": "ภาระงานทั้งหมด",
     "pendingWorkload": "ภาระงานรอการอนุมัติ",
     "approvedWorkload": "ภาระงานที่อนุมัติแล้ว",
@@ -44,6 +44,13 @@
     "noSubmissions": "ยังไม่มีการส่งภาระงาน",
     "noSubmissionsHint": "เมื่อคุณส่งภาระงาน สถานะจะแสดงที่นี่",
     "submissionTeachingHours": "จำนวนภาระงานสอน {{hours}} ชั่วโมง"
+  },
+  "Notifications": {
+    "title": "อัปเดตจาก HR",
+    "new": "ใหม่",
+    "clearAll": "ล้างการแจ้งเตือนทั้งหมด",
+    "empty": "ไม่มีการแจ้งเตือน",
+    "emptyHint": "เมื่อมีการแจ้งเตือนใหม่จะแสดงที่นี่"
   },
   "Profile": {
     "title": "ข้อมูลส่วนตัว",

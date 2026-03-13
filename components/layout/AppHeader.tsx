@@ -53,7 +53,7 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <SidebarTrigger className="text-white dark:text-sidebar-foreground hover:bg-orange-600 dark:hover:bg-sidebar-accent rounded-lg shrink-0" />
         {breadcrumb && (
-          <span className="text-white/90 dark:text-sidebar-foreground text-xs sm:text-sm font-medium truncate hidden xs:block sm:block">
+          <span className="text-white/90 dark:text-sidebar-foreground text-base sm:text-lg font-medium truncate hidden xs:block sm:block">
             {breadcrumb}
           </span>
         )}

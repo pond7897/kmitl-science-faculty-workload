@@ -18,28 +18,28 @@ interface BadgeConfig {
 }
 
 const badgeConfig: Record<SubmissionStatus, BadgeConfig> = {
-  pending: {
-    labelKey: 'Dashboard.statusPending',
+  approved: {
+    labelKey: 'Dashboard.statusApproved',
     className:
-      'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800',
-    dotColor: 'bg-amber-400',
+      'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
+    dotColor: 'bg-blue-500',
   },
   processing: {
     labelKey: 'Dashboard.statusProcessing',
     className:
-      'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
-    dotColor: 'bg-blue-400',
-  },
-  approved: {
-    labelKey: 'Dashboard.statusApproved',
-    className:
-      'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+      'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
     dotColor: 'bg-green-500',
+  },
+  pending: {
+    labelKey: 'Dashboard.statusPending',
+    className:
+      'bg-orange-100 text-orange-800 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800',
+    dotColor: 'bg-orange-400',
   },
   rejected: {
     labelKey: 'Dashboard.statusRejected',
     className:
-      'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+      'bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
     dotColor: 'bg-red-500',
   },
 };
@@ -176,7 +176,7 @@ export function RecentSubmissionsCard({
 }: RecentSubmissionsCardProps) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'th' ? 'th-TH' : 'en-US';
-  const displayed = submissions.slice(0, 5);
+  const displayed = submissions.slice(0, 10);
 
   return (
     <Card className="bg-white dark:bg-[#2a2a2a] rounded-2xl border-gray-100 dark:border-gray-700 shadow-sm col-span-full py-0">
@@ -201,7 +201,7 @@ export function RecentSubmissionsCard({
         <div className="-mx-4 sm:-mx-6 border-b-2 border-gray-100 dark:border-gray-700" />
 
         {/* Submission list */}
-        <ul className="mt-0">
+        <ul className="mt-0 max-h-120 overflow-y-auto -mx-4 sm:-mx-6 px-4 sm:px-6">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} />)
           ) : displayed.length === 0 ? (

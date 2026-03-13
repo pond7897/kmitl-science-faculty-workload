@@ -89,6 +89,41 @@ export function useDashboardData() {
               submittedAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
               teachingHours: 60,
             },
+            {
+              id: '6',
+              title: 'ภาระงาน ปีการศึกษา 2566 ภาคเรียนที่ 2',
+              status: 'approved',
+              submittedAt: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000),
+              teachingHours: 160,
+            },
+            {
+              id: '7',
+              title: 'ภาระงาน ปีการศึกษา 2566 ภาคเรียนที่ 1',
+              status: 'rejected',
+              submittedAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
+              teachingHours: 110,
+            },
+            {
+              id: '8',
+              title: 'ภาระงาน ปีการศึกษา 2565 ภาคเรียนที่ 2',
+              status: 'approved',
+              submittedAt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000),
+              teachingHours: 175,
+            },
+            {
+              id: '9',
+              title: 'ภาระงาน ปีการศึกษา 2565 ภาคเรียนที่ 1',
+              status: 'processing',
+              submittedAt: new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000),
+              teachingHours: 130,
+            },
+            {
+              id: '10',
+              title: 'ภาระงาน ปีการศึกษา 2564 ภาคเรียนที่ 2',
+              status: 'approved',
+              submittedAt: new Date(now.getTime() - 120 * 24 * 60 * 60 * 1000),
+              teachingHours: 155,
+            },
           ],
         };
         // -----------------------------------------------
