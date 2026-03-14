@@ -20,11 +20,37 @@
     "language": "Language"
   },
   "Dashboard": {
-    "title": "Dashboard",
-    "overview": "Your workload overview",
+    "title": "Welcome",
+    "overview": "Annual Workload Summary, Academic Year 2025",
+    "teachingHours": "Teaching Hours",
+    "currentTarget": "Current / Target",
+    "hoursUnit": "hrs.",
+    "hoursUnitShort": "hrs.",
+    "lectureHours": "Lecture Hours",
+    "labHours": "Lab Hours",
+    "adminWork": "Administrative Work",
+    "activeCourses": "Current Courses",
+    "courseUnit": "courses",
+    "latestSubmission": "Latest Submission Status",
+    "statusPending": "Pending Dean Approval",
+    "statusApproved": "Submitted Successfully",
+    "statusRejected": "Rejected",
+    "statusProcessing": "Dept. Head Approved",
     "totalWorkload": "Total Workload",
     "pendingWorkload": "Pending Workload",
-    "approvedWorkload": "Approved Workload"
+    "approvedWorkload": "Approved Workload",
+    "recentSubmissions": "Recent Submissions",
+    "viewAll": "View All",
+    "noSubmissions": "No submissions yet",
+    "noSubmissionsHint": "Once you submit a workload report, the status will appear here.",
+    "submissionTeachingHours": "{{hours}} hrs. of teaching"
+  },
+  "Notifications": {
+    "title": "HR Updates",
+    "new": "New",
+    "clearAll": "Clear All Notifications",
+    "empty": "No notifications",
+    "emptyHint": "New notifications will appear here"
   },
   "Profile": {
     "title": "Personal Info",

@@ -33,10 +33,10 @@ export function ProfileContent({ data, rawSession }: ProfileContentProps) {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
           {t('Profile.title')}
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+        <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
           {t('Profile.welcome')}{' '}
           {currentLanguage === 'en'
             ? `${data.firstname_en || data.firstname_th || 'User'} ${data.lastname_en || data.lastname_th || ''}`
@@ -45,8 +45,8 @@ export function ProfileContent({ data, rawSession }: ProfileContentProps) {
       </div>
 
       {/* User Info Card */}
-      <div className="bg-white dark:bg-[#2a2a2a] rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h2 className="text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">
+      <div className="bg-white dark:bg-[#2a2a2a] rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-6">
+        <h2 className="text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">
           {t('Profile.detail')}
         </h2>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">

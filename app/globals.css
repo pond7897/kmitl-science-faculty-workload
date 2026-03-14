@@ -144,3 +144,50 @@
     @apply bg-background text-foreground;
   }
 }
+
+/*
+ * ─── Elderly-Friendly Font Size Utilities ───────────────────────────────────
+ *
+ * ใช้ class เหล่านี้เพื่อขยาย font ให้อ่านง่ายขึ้นสำหรับผู้สูงอายุ
+ * โดยไม่กระทบ font size ของทั้งระบบ
+ *
+ * ตัวอย่างการใช้งาน:
+ *   <p className="text-elder-sm">ข้อความขนาดเล็ก</p>
+ *   <p className="text-elder-base">ข้อความปกติ</p>
+ *   <p className="text-elder-lg">ข้อความขนาดใหญ่</p>
+ *   <p className="text-elder-xl">ข้อความขนาดใหญ่มาก</p>
+ *
+ *   หรือใช้ wrapper ครอบทั้ง section:
+ *   <div className="elder-mode">...</div>
+ *   → ทุก element ภายในจะขยาย font ขึ้น ~20%
+ * ─────────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* ── Individual sizes (เทียบกับ Tailwind default + ~2–3px) ── */
+  .text-elder-xs   { font-size: 0.825rem;  line-height: 1.5; }   /* xs  = 13.2px  (default: 12px)  */
+  .text-elder-sm   { font-size: 0.9375rem; line-height: 1.55; }  /* sm  = 15px    (default: 14px)  */
+  .text-elder-base { font-size: 1.0625rem; line-height: 1.6;  }  /* base= 17px    (default: 16px)  */
+  .text-elder-lg   { font-size: 1.25rem;   line-height: 1.55; }  /* lg  = 20px    (default: 18px)  */
+  .text-elder-xl   { font-size: 1.375rem;  line-height: 1.5;  }  /* xl  = 22px    (default: 20px)  */
+  .text-elder-2xl  { font-size: 1.625rem;  line-height: 1.4;  }  /* 2xl = 26px    (default: 24px)  */
+  .text-elder-3xl  { font-size: 2rem;      line-height: 1.35; }  /* 3xl = 32px    (default: 30px)  */
+
+  /* ── Wrapper mode: ขยาย font ทุก element ภายใน div ~20% ── */
+  .elder-mode {
+    font-size: 1.0625rem; /* base = 17px */
+    line-height: 1.65;
+  }
+  .elder-mode h1 { font-size: 2rem;    line-height: 1.3; }
+  .elder-mode h2 { font-size: 1.625rem; line-height: 1.35; }
+  .elder-mode h3 { font-size: 1.375rem; line-height: 1.4; }
+  .elder-mode h4 { font-size: 1.25rem;  line-height: 1.45; }
+  .elder-mode p,
+  .elder-mode li,
+  .elder-mode td,
+  .elder-mode th,
+  .elder-mode label,
+  .elder-mode input,
+  .elder-mode select,
+  .elder-mode textarea,
+  .elder-mode button { font-size: 1.0625rem; line-height: 1.65; }
+  .elder-mode small  { font-size: 0.9375rem; line-height: 1.55; }
+}

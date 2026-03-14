@@ -17,6 +17,13 @@ export async function getAuthSession(): Promise<AuthSession | null> {
   }
 }
 
+const roleLabels: Record<string, { en: string; th: string }> = {
+  student: { en: 'Student', th: 'นักศึกษา' },
+  faculty: { en: 'Faculty Member', th: 'อาจารย์' },
+  staff: { en: 'Staff', th: 'เจ้าหน้าที่' },
+  admin: { en: 'Administrator', th: 'ผู้ดูแลระบบ' },
+};
+
 /**
  * Get a simplified AppUser object for use in UI components.
  */
@@ -24,11 +31,29 @@ export async function getAppUser(): Promise<AppUser | null> {
   const session = await getAuthSession();
   if (!session) return null;
 
-  const { profile } = session;
+  const { profile, userinfo } = session;
+
+  const firstnameEn = profile?.data.firstname_en || '';
+  const lastnameEn = profile?.data.lastname_en || '';
+  const firstnameTh = profile?.data.firstname_th || '';
+  const lastnameTh = profile?.data.lastname_th || '';
+
+  const roleKey = userinfo?.data.role?.toLowerCase() || '';
+  const roleEn =
+    profile?.data.position_en ||
+    roleLabels[roleKey]?.en ||
+    'Faculty Member';
+  const roleTh =
+    profile?.data.position_th ||
+    roleLabels[roleKey]?.th ||
+    'อาจารย์';
+
   return {
-    name: `${profile?.data.firstname_en || 'User'} ${profile?.data.lastname_en || ''}`.trim(),
-    role: profile?.data.position_en || 'Faculty Member',
-    avatar: profile?.data.avatar_url,
+    name_en: `${firstnameEn} ${lastnameEn}`.trim() || 'User',
+    name_th: `${firstnameTh} ${lastnameTh}`.trim() || 'ผู้ใช้',
+    role_en: roleEn,
+    role_th: roleTh,
+    avatar: userinfo?.data.avatar ?? profile?.data.avatar_url,
   };
 }
 
