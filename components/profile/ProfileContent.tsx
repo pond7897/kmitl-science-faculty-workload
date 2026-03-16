@@ -1,75 +1,86 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/hooks/use-language';
+import { ProfileHeroCard } from '@/components/profile/ProfileHeroCard';
+import { ProfileInfoCard } from '@/components/profile/ProfileInfoCard';
+import type { UserProfile, UserInfo } from '@/lib/types/auth';
 
-interface ProfileData {
-  firstname_th?: string;
-  lastname_th?: string;
-  firstname_en?: string;
-  lastname_en?: string;
-  position_en?: string;
-  email?: string;
-}
+const roleLabels: Record<string, { en: string; th: string }> = {
+  student: { en: 'Student', th: 'นักศึกษา' },
+  faculty: { en: 'Faculty Member', th: 'อาจารย์' },
+  staff: { en: 'Staff', th: 'เจ้าหน้าที่' },
+  admin: { en: 'Administrator', th: 'ผู้ดูแลระบบ' },
+};
 
 interface ProfileContentProps {
-  data: ProfileData;
-  rawSession?: object;
+  data: {
+    firstname_th?: string;
+    lastname_th?: string;
+    firstname_en?: string;
+    lastname_en?: string;
+    position_en?: string;
+    email?: string;
+  };
+  rawSession?: {
+    profile?: UserProfile;
+    userinfo?: UserInfo;
+  };
 }
 
 export function ProfileContent({ data, rawSession }: ProfileContentProps) {
-  const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
 
-  const fields = [
-    { label: t('Profile.firstnameTh'), value: data.firstname_th },
-    { label: t('Profile.lastnameTh'), value: data.lastname_th },
-    { label: t('Profile.firstnameEn'), value: data.firstname_en },
-    { label: t('Profile.lastnameEn'), value: data.lastname_en },
-    { label: t('Profile.position'), value: data.position_en },
-    { label: t('Profile.email'), value: data.email },
+  // Build a normalised profile object so sub-components receive typed data.
+  const profile: UserProfile = rawSession?.profile ?? {
+    data: {
+      firstname_en: data.firstname_en ?? '',
+      lastname_en: data.lastname_en ?? '',
+      firstname_th: data.firstname_th ?? '',
+      lastname_th: data.lastname_th ?? '',
+      position_en: data.position_en,
+    },
+  };
+
+  const userinfo: UserInfo = rawSession?.userinfo ?? {
+    data: { email: data.email ?? '' },
+  };
+
+  const isTh = currentLanguage === 'th';
+
+  // ── Personal-info fields ──────────────────────────────────────────────────
+  const roleKey = (userinfo.data.role ?? '').toLowerCase();
+  const positionFallback = isTh
+    ? (roleLabels[roleKey]?.th ?? undefined)
+    : (roleLabels[roleKey]?.en ?? undefined);
+
+  const positionValue = isTh
+    ? (profile.data.position_th ?? profile.data.position_en ?? positionFallback)
+    : (profile.data.position_en ?? profile.data.position_th ?? positionFallback);
+
+  const employeeId = userinfo.data.id as string | undefined;
+
+  const infoFields = [
+    { labelKey: 'Profile.position', value: positionValue },
+    { labelKey: 'Profile.employeeId', value: employeeId },
+    { labelKey: 'Profile.email', value: userinfo.data.email },
+    { labelKey: 'Profile.phone', value: undefined }, // phone not in API yet
   ];
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('Profile.title')}
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
-          {t('Profile.welcome')}{' '}
-          {currentLanguage === 'en'
-            ? `${data.firstname_en || data.firstname_th || 'User'} ${data.lastname_en || data.lastname_th || ''}`
-            : `${data.firstname_th || 'User'} ${data.lastname_th || ''}`}
-        </p>
-      </div>
+    <div className="w-full space-y-4 sm:space-y-6">
+      {/* ── Hero: avatar · name · title · faculty / dept ── */}
+      <ProfileHeroCard profile={profile} userinfo={userinfo} />
 
-      {/* User Info Card */}
-      <div className="bg-white dark:bg-[#2a2a2a] rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h2 className="text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">
-          {t('Profile.detail')}
-        </h2>
-        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {fields.map(({ label, value }) => (
-            <div key={label}>
-              <dt className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">
-                {label}
-              </dt>
-              <dd className="text-sm font-medium text-gray-900 dark:text-white">
-                {value || '—'}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+      {/* ── Personal information fields ── */}
+      <ProfileInfoCard fields={infoFields} />
 
-      {/* Raw JSON (dev only) */}
+      {/* ── Raw JSON (dev only) ── */}
       {process.env.NODE_ENV === 'development' && rawSession && (
-        <details className="bg-white dark:bg-[#2a2a2a] rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+        <details className="bg-white dark:bg-[#2a2a2a] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-6">
           <summary className="text-sm font-medium text-gray-500 cursor-pointer select-none">
             Raw session data (dev only)
           </summary>
-          <pre className="mt-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-md overflow-auto text-xs text-gray-700 dark:text-gray-300">
+          <pre className="mt-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg overflow-auto text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
             {JSON.stringify(rawSession, null, 2)}
           </pre>
         </details>
