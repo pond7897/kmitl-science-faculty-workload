@@ -29,12 +29,20 @@
   "Profile": {
     "title": "Personal Info",
     "detail": "User Details",
+    "personalInfo": "Personal Information",
     "firstnameTh": "First Name (Thai)",
     "lastnameTh": "Last Name (Thai)",
     "firstnameEn": "First Name (English)",
     "lastnameEn": "Last Name (English)",
     "position": "Position",
+    "employeeId": "Employee ID",
     "email": "Email",
-    "welcome": "Welcome"
+    "phone": "Phone Number",
+    "faculty": "Faculty",
+    "department": "Department",
+    "role": "Role",
+    "welcome": "Welcome",
+    "facultyName": "Faculty of Science",
+    "noData": "No data"
   }
 }
