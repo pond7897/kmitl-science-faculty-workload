@@ -29,12 +29,20 @@
   "Profile": {
     "title": "ข้อมูลส่วนตัว",
     "detail": "รายละเอียดผู้ใช้",
+    "personalInfo": "ข้อมูลส่วนตัว",
     "firstnameTh": "ชื่อ (ภาษาไทย)",
     "lastnameTh": "นามสกุล (ภาษาไทย)",
     "firstnameEn": "ชื่อ (English)",
     "lastnameEn": "นามสกุล (English)",
     "position": "ตำแหน่ง",
+    "employeeId": "รหัสพนักงาน",
     "email": "อีเมล",
-    "welcome": "ยินดีต้อนรับ"
+    "phone": "เบอร์โทรศัพท์",
+    "faculty": "คณะ",
+    "department": "ภาควิชา",
+    "role": "บทบาท",
+    "welcome": "ยินดีต้อนรับ",
+    "facultyName": "คณะวิทยาศาสตร์",
+    "noData": "ไม่มีข้อมูล"
   }
 }
