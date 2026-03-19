@@ -1,9 +1,18 @@
 {
   "LoginPage": {
     "title": "เข้าสู่ระบบ",
-    "subtitle": "เลือกวิธีการเข้าสู่ระบบ",
-    "signInWithGoogle": "เข้าสู่ระบบด้วย Google",
-    "signIn": "กดที่นี่เพื่อเข้าสู่ระบบ",
+    "subtitle": "เข้าสู่ระบบเพื่อใช้งาน",
+    "email": "อีเมล",
+    "emailPlaceholder": "you@science.kmitl.ac.th",
+    "password": "รหัสผ่าน",
+    "passwordPlaceholder": "กรอกรหัสผ่าน",
+    "showPassword": "แสดงรหัสผ่าน",
+    "hidePassword": "ซ่อนรหัสผ่าน",
+    "signIn": "เข้าสู่ระบบ",
+    "signingIn": "กำลังเข้าสู่ระบบ…",
+    "requiredFields": "กรุณากรอกอีเมลและรหัสผ่าน",
+    "invalidCredentials": "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่",
+    "unexpectedError": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
     "privacyPolicy": "นโยบายความเป็นส่วนตัว",
     "language": "ภาษา"
   },
