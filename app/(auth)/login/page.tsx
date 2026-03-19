@@ -1,7 +1,4 @@
-import { LoginCard } from "@/components/auth/LoginCard";
-import { LoginFooter } from "@/components/auth/LoginFooter";
-import { LoginLogo } from "@/components/auth/LoginLogo";
-import LoginForm from "@/components/auth/LoginForm";
+import { LoginCard, LoginFooter, LoginForm, LoginLogo } from "@/components/auth";
 
 export default function LoginPage() {
   return (
