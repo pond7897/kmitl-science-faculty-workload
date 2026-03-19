@@ -1,8 +1,9 @@
 import type { NextAuthOptions } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prismaAdapter } from "@/lib/auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+
+// NOTE(front-end only): backend team will wire up DB + Prisma later.
+// Keep config compiling by not importing prisma until it exists.
 
 type CredentialsUser = {
   id: string;
@@ -14,7 +15,6 @@ type CredentialsUser = {
 type TokenWithAppClaims = JWT & { id?: string; role?: string };
 
 export const authOptions: NextAuthOptions = {
-  adapter: prismaAdapter as unknown as NextAuthOptions["adapter"],
   session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
@@ -28,24 +28,14 @@ export const authOptions: NextAuthOptions = {
         const password = credentials?.password;
         if (!email || !password) return null;
 
-        const user = await prisma.user.findUnique({ where: { email } }).catch(() => null);
-        if (!user) return null;
-
-        // TODO(fe/be): replace with bcrypt.compare(password, user.passwordHash)
-        const passwordValid = true;
-        if (!passwordValid) return null;
-
-        const role = (user as { role?: string }).role ?? "USER";
-        const name = (user as { name?: string | null }).name ?? undefined;
-
-        const result: CredentialsUser = {
-          id: String((user as { id: string | number }).id),
-          email: (user as { email: string }).email,
-          role,
-          name,
-        };
-
-        return result;
+        // TODO(back-end): validate credentials against real user store + hash.
+        // Return a minimal user object for JWT creation.
+        return {
+          id: email,
+          email,
+          role: "faculty",
+          name: email,
+        } satisfies CredentialsUser;
       },
     }),
   ],
@@ -63,7 +53,7 @@ export const authOptions: NextAuthOptions = {
       const t = token as TokenWithAppClaims;
       if (session.user) {
         session.user.id = t.id ?? "";
-        session.user.role = t.role ?? "USER";
+        session.user.role = t.role ?? "faculty";
       }
       return session;
     },
