@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:api": "playwright test"
+    "test:api": "bunx playwright test",
+    "test:screenshots": "bunx playwright test tests/login-screenshots.spec.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
