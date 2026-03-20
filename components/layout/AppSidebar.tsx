@@ -158,7 +158,7 @@ export function AppSidebar() {
               `}
             >
               <Link
-                href="/api/auth/logout"
+                href="/api/auth/sign-out"
                 className="flex items-center justify-center gap-2"
               >
                 <span className="text-[14.5px] tracking-wide group-data-[collapsible=icon]:hidden">

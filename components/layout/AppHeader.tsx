@@ -2,10 +2,12 @@
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useTranslation } from 'react-i18next';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
+import { LogOut } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface AppHeaderProps {
   userInfo?: {
@@ -18,6 +20,29 @@ interface AppHeaderProps {
 export function AppHeader({ userInfo }: AppHeaderProps) {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const res = await fetch('/api/auth/sign-out', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Server will redirect to / after successful sign out
+      // Just wait for the redirect
+      if (res.ok) {
+        window.location.href = res.url || '/';
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setIsLoggingOut(false);
+    }
+  };
 
   const breadcrumbMap: Record<string, string> = {
     '/dashboard': t('Sidebar.dashboard'),
@@ -56,6 +81,14 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
           <>
             <div className="w-px h-6 bg-white/30 dark:bg-sidebar-border mx-1" />
             <div className="flex items-center gap-3">
+              <button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="text-white dark:text-sidebar-foreground hover:bg-orange-600 dark:hover:bg-sidebar-accent rounded-lg p-2 transition-colors disabled:opacity-50"
+                title={t('Sidebar.logout') || 'Logout'}
+              >
+                <LogOut size={18} />
+              </button>
               <div className="text-right hidden sm:block">
                 <p className="text-white dark:text-sidebar-foreground font-semibold text-sm leading-tight">
                   {userInfo.name}
