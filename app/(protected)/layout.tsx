@@ -11,10 +11,15 @@ type Props = {
 export default async function ProtectedLayout({ children }: Props) {
   const session = await getAuthSession();
 
-  if (!session) {
-    redirect('/api/auth/login');
-  }
+  // for instance IAM 
 
+  /* if (!session) {
+    redirect('/api/auth/login');
+  } */
+
+  if (!session) {
+    redirect('/login');
+  }
   const user = await getAppUser();
 
   return (
