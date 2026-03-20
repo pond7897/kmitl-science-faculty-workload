@@ -62,6 +62,25 @@ export default function LoginForm() {
         return;
       }
 
+      // Log the response for debugging
+      const responseData = await res.json();
+      console.log('[LoginForm] Sign-in response:', responseData);
+      console.log('[LoginForm] Response status:', res.status);
+      
+      // Log all response headers
+      console.log('[LoginForm] Response headers:');
+      res.headers.forEach((value, name) => {
+        console.log(`  ${name}: ${value}`);
+      });
+      
+      // Check cookies after response (browser-side)
+      const cookies = document.cookie;
+      console.log('[LoginForm] Cookies after sign-in:', cookies);
+      
+      // Parse individual cookies
+      const cookieArray = cookies.split(';').map(c => c.trim());
+      console.log('[LoginForm] Cookie array:', cookieArray);
+
       router.replace("/dashboard");
       router.refresh();
     } catch {

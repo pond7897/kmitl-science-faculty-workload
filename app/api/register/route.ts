@@ -1,32 +1,46 @@
-import 'dotenv/config'
-import { PrismaClient } from "@/lib/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-
-const connectionString = `${process.env.DATABASE_URL}?schema=public`;
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
+import 'dotenv/config';
+import { auth, prisma } from "@/lib/auth/auth";
 
 export async function POST(request: Request) {
   try {
-    const { email, password, name } = await request.json();
+    const { email, password, firstName, lastName } = await request.json();
 
-    const hashPassword = await Bun.password.hash(password, {
-      algorithm: 'bcrypt'
-    })
+    if (!email || !password) {
+      return Response.json({ error: "Email and password are required" }, { status: 400 });
+    }
 
-    const user = await prisma.user.create({
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const name = `${firstName ?? ""} ${lastName ?? ""}`.trim() || normalizedEmail;
+
+    const signUpResult = await auth.api.signUpEmail({
+      body: {
+        email: normalizedEmail,
+        password: String(password),
+        name,
+      },
+      headers: request.headers,
+    });
+
+    const userId = signUpResult?.user?.id;
+    if (!userId) {
+      return Response.json({ error: "Failed to create user" }, { status: 400 });
+    }
+
+    const user = await prisma.user.update({
+      where: { id: userId },
       data: {
-        email,
-        password: hashPassword,
-        name
-      }
-    })
+        firstname_th: firstName,
+        lastname_th: lastName,
+        email: normalizedEmail,
+        name,
+      },
+    });
 
-    return Response.json({ message: 'User created successfully', user }, { status: 201 });
+    return Response.json({ message: "User created successfully", user }, { status: 201 });
   } catch (error) {
     console.log(error);
 
-    return Response.json({ error: 'Failed to create user' });
+    return Response.json({ error: "Failed to create user" }, { status: 500 });
   }
 }
 
