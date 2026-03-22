@@ -14,7 +14,13 @@ const nextConfig: NextConfig = {
         pathname: "/storage/2024/06/About-4-B.png",
       }
     ]
-  }
+  },
+  allowedDevOrigins: [
+    "9pm.website",
+    "*.9pm.website",
+    "local-origin.dev",
+    "*.local-origin.dev",
+  ]
 };
 
 export default nextConfig;

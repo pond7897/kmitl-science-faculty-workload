@@ -73,6 +73,9 @@ export default function LoginForm() {
         console.log(`  ${name}: ${value}`);
       });
       
+      // Wait a bit for cookies to be set by the browser
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       // Check cookies after response (browser-side)
       const cookies = document.cookie;
       console.log('[LoginForm] Cookies after sign-in:', cookies);
@@ -80,9 +83,23 @@ export default function LoginForm() {
       // Parse individual cookies
       const cookieArray = cookies.split(';').map(c => c.trim());
       console.log('[LoginForm] Cookie array:', cookieArray);
+      
+      // Verify that session cookie exists before redirecting
+      const hasSessionCookie = cookieArray.some(cookie => 
+        cookie.startsWith('better_auth.session_token=') || 
+        cookie.startsWith('better-auth.session_token=')
+      );
+      
+      console.log('[LoginForm] Has session cookie:', hasSessionCookie);
+      
+      if (!hasSessionCookie) {
+        console.warn('[LoginForm] Warning: Session cookie not found after sign-in');
+        // Give it a bit more time
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
 
-      router.replace("/dashboard");
-      router.refresh();
+      // Use window.location for a full page reload to ensure cookies are properly set
+      window.location.href = "/dashboard";
     } catch {
       setError(t("LoginPage.unexpectedError"));
     } finally {
