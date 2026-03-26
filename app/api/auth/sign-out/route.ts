@@ -15,8 +15,8 @@ async function handleSignOut(request: Request) {
       );
     }
 
-    // Redirect to home page
-    return NextResponse.redirect(new URL('/', request.url), { status: 302 });
+    const baseUrl = process.env.BETTER_AUTH_URL || new URL(request.url).origin;
+    return NextResponse.redirect(new URL('/', baseUrl), { status: 302 });
   } catch (error) {
     console.error('[signOut] Error:', error);
     return NextResponse.json(
