@@ -1,48 +1,41 @@
 import { betterAuth } from 'better-auth';
-import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { PrismaClient } from '../generated/prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { prisma } from './prisma';
+import { dash } from '@better-auth/infra';
 
-const prisma = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
-});
-
+const isProd = process.env.NODE_ENV === 'production';
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   secret: process.env.BETTER_AUTH_SECRET,
 
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
 
-  emailAndPassword: {
-    enabled: true,
-  },
+  emailAndPassword: { enabled: true },
 
-  // Cookie configuration for production and development
   trustedOrigins: [
-    'http://localhost:3000', 
+    'http://localhost:3000',
     'http://localhost:3001',
-    'http://9pm.website',
-    'https://9pm.website',
+    'http://192.168.1.37:3000',
+    'https://09b5-2001-fb1-5f-e98-f121-fdf8-e57-a8e9.ngrok-free.app',
+    'https://9pm.website'
   ],
-  
-  // Advanced session configuration for cross-origin
+
   advanced: {
-    useSecureCookies: false, // Allow cookies over HTTP for development
-    cookiePrefix: 'better_auth',
-    crossSubDomainCookies: {
-      enabled: true,
-    },
-  },
-  
-  // Session configuration
-  session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // Update session every 24 hours
+    defaultCookieAttributes: {
+      domain: isProd ? '.9pm.website' : 'localhost',
+      sameSite: isProd ? 'none' : 'lax',
+      secure: isProd ? true : false,
+    }
   },
 
-  // User fields configuration
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
+    storeSessionInDatabase: true,
+  },
+
   user: {
     additionalFields: {
       firstname_th: { type: 'string' },
@@ -52,7 +45,6 @@ export const auth = betterAuth({
       iamId: { type: 'string' },
     },
   },
+
+  plugins: [dash()],
 });
-
-export { prisma };
-
