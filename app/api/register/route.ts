@@ -17,6 +17,11 @@ export async function POST(request: Request) {
         email: normalizedEmail,
         password: String(password),
         name,
+        firstname_th: firstName,
+        lastname_th: lastName,
+        firstname_en: firstName,
+        lastname_en: lastName,
+        iamId: '',
       },
       headers: request.headers,
     });
