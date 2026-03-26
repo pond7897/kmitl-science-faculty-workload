@@ -9,6 +9,8 @@ export async function getAuthSession(): Promise<AuthSession | null> {
     let sessionToken =
       cookieStore.get('better_auth.session_token')?.value ||
       cookieStore.get('better-auth.session_token')?.value ||
+      cookieStore.get('__Secure-better_auth.session_token')?.value ||
+      cookieStore.get('__Secure-better-auth.session_token')?.value ||
       cookieStore.get('sessionToken')?.value;
 
     if (!sessionToken) {
