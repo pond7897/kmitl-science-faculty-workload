@@ -12,6 +12,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Gender {
+  M
+  F
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -27,14 +32,216 @@ model User {
   lastname_th  String?
   firstname_en String?
   lastname_en  String?
+  gender       Gender?
+  birth_date   DateTime?
 
-  role Role @default(faculty)
+  departmentId String?     @map("department_id")
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  role             Role      @default(staff)
+  position         Position? @default(professor)
+  academicPosition String?   @map("academic_position")
+  retireDate       DateTime? @map("retire_date")
+  resignationDate  DateTime? @map("resignation_date")
 
   sessions Session[]
   accounts Account[]
 
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  processes             Process[]
+  teachingSchedules     TeachingSchedule[]
+  teachingWeeksLabs     TeachingWeeksLab[]
+  teachingWeeksTheories TeachingWeeksTheory[]
+}
+
+model Department {
+  id     String @id @default(cuid())
+  nameTh String @map("name_th")
+  nameEn String @map("name_en")
+
+  users User[]
+
+  @@map("departments")
+}
+
+model Process {
+  id         String @id @default(cuid())
+  scheduleId String @map("schedule_id")
+  userId     String @map("users_id")
+
+  type ProcessType @map("process")
+
+  // relations
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedule TeachingSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  // timestamps (สำคัญมาก)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([scheduleId])
+  @@map("process")
+}
+
+model AcademicYear {
+  id        String @id @default(cuid()) @map("year_id")
+  sectionId String @map("section_id")
+  year      Int
+  semester  Int
+
+  section Section @relation(fields: [sectionId], references: [id])
+
+  teachingSchedules TeachingSchedule[]
+  histories         History[]
+
+  @@map("academic_year")
+}
+
+model Course {
+  id      String @id @default(cuid()) @map("courses_id")
+  name    String @map("courses_name")
+  credits String
+
+  sections Section[]
+
+  @@map("courses")
+}
+
+model Section {
+  id                 String @id @default(cuid()) @map("section_id")
+  courseId           String @map("courses_id")
+  faculty            String
+  major              String
+  yearLevel          String @map("year_level")
+  section            String
+  studentsRegistered Int    @map("students_registered")
+  studentsPerWeek    Int    @map("students_per_week")
+
+  course Course @relation(fields: [courseId], references: [id])
+
+  academicYears AcademicYear[]
+
+  @@map("sections")
+}
+
+model TeachingSchedule {
+  id                     String @id @default(cuid()) @map("schedule_id")
+  userId                 String @map("users_id")
+  yearId                 String @map("year_id")
+  dayOfWeek              String @map("day_of_week")
+  degree                 String
+  teachingWeeksLab       Int    @map("teaching_weeks_lab")
+  teachingWeeksTheory    Int    @map("teaching_weeks_theory")
+  teachingWorkloadLab    Int    @map("teaching_workload_lab")
+  teachingWorkloadTheory Int    @map("teaching_workload_theory")
+
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  year AcademicYear @relation(fields: [yearId], references: [id])
+
+  labWeeks     TeachingWeeksLab[]
+  theoryWeeks  TeachingWeeksTheory[]
+  workloadLab  TeachingWorkloadLab?
+  workloadTheo TeachingWorkloadTheory?
+
+  processes Process[]
+  histories History[]
+
+  @@map("teaching_schedule")
+}
+
+model TeachingWeeksLab {
+  id         String  @id @default(cuid()) @map("week_id_lab")
+  scheduleId String  @map("schedule_id")
+  labId      String  @map("lab_id")
+  weekNumber Int     @map("week_number")
+  userId     String  @map("users_id")
+  external   Boolean @map("external_speaker")
+  pdfFile    String? @map("pdf_file")
+
+  schedule TeachingSchedule @relation(fields: [scheduleId], references: [id])
+  lab      Lab              @relation(fields: [labId], references: [id])
+  user     User             @relation(fields: [userId], references: [id])
+
+  @@map("teaching_weeks_lab")
+}
+
+model TeachingWeeksTheory {
+  id         String  @id @default(cuid()) @map("week_id_theory")
+  scheduleId String  @map("schedule_id")
+  theoryId   String  @map("theory_id")
+  weekNumber Int     @map("week_number")
+  userId     String  @map("users_id")
+  external   Boolean @map("external_speaker")
+  pdfFile    String? @map("pdf_file")
+
+  schedule TeachingSchedule @relation(fields: [scheduleId], references: [id])
+  theory   Theory           @relation(fields: [theoryId], references: [id])
+  user     User             @relation(fields: [userId], references: [id])
+
+  @@map("teaching_weeks_theory")
+}
+
+model Lab {
+  id           String   @id @default(cuid()) @map("lab_id")
+  startTime    DateTime @map("start_time")
+  endTime      DateTime @map("end_time")
+  hoursPerWeek Int      @map("hours_per_week")
+
+  weeks TeachingWeeksLab[]
+
+  @@map("lab")
+}
+
+model Theory {
+  id           String   @id @default(cuid()) @map("theory_id")
+  startTime    DateTime @map("start_time")
+  endTime      DateTime @map("end_time")
+  hoursPerWeek Int      @map("hours_per_week")
+
+  weeks TeachingWeeksTheory[]
+
+  @@map("theory")
+}
+
+model TeachingWorkloadLab {
+  id               String  @id @default(cuid()) @map("workload_id_lab")
+  scheduleId       String  @unique @map("schedule_id")
+  totalWeeks       Int     @map("total_weeks")
+  totalHours       Float   @map("total_hours")
+  teachingWorkload Float   @map("teaching_workload")
+  overloadHours    Float   @map("overload_hours")
+  note             String?
+
+  schedule TeachingSchedule @relation(fields: [scheduleId], references: [id])
+
+  @@map("teaching_workload_lab")
+}
+
+model TeachingWorkloadTheory {
+  id               String  @id @default(cuid()) @map("workload_id_theory")
+  scheduleId       String  @unique @map("schedule_id")
+  totalWeeks       Int     @map("total_weeks")
+  totalHours       Float   @map("total_hours")
+  teachingWorkload Float   @map("teaching_workload")
+  overloadHours    Float   @map("overload_hours")
+  note             String?
+
+  schedule TeachingSchedule @relation(fields: [scheduleId], references: [id])
+
+  @@map("teaching_workload_theory")
+}
+
+model History {
+  id         String @id @default(cuid()) @map("history_id")
+  yearId     String @map("year_id")
+  scheduleId String @map("schedule_id")
+
+  year     AcademicYear     @relation(fields: [yearId], references: [id])
+  schedule TeachingSchedule @relation(fields: [scheduleId], references: [id])
+
+  @@map("history")
 }
 
 model Session {
@@ -84,7 +291,26 @@ model Verification {
 }
 
 enum Role {
-  faculty
-  head_of_depart
   admin
+  staff
+}
+
+enum Position {
+  professor
+  department_head
+  secretary
+  hr
+  academic
+  finance
+  support_director
+  vice_dean
+  dean
+}
+
+// undone: need to add more process types
+enum ProcessType {
+  draft // กำลังกรอก
+  submitted // ส่งแล้ว
+  approved // อนุมัติ
+  rejected // ตีกลับ
 }
