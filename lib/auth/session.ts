@@ -14,7 +14,22 @@ export async function getAuthSession(): Promise<AuthSession | null> {
     }
 
     const { user } = session;
-    const userData = user as any;
+    const userData = user as typeof user & {
+      firstname_en?: string | null;
+      lastname_en?: string | null;
+      firstname_th?: string | null;
+      lastname_th?: string | null;
+      position_en?: string | null;
+      role?: string | null;
+    };
+
+    const ROLES = {
+      'admin': 'Administrator',
+      'faculty': 'Faculty Member',
+      'head_of_depart': 'Head of Department',
+    }
+
+    const roleLabel = ROLES[userData.role as keyof typeof ROLES] || 'Faculty Member';
 
     return {
       profile: {
@@ -23,7 +38,8 @@ export async function getAuthSession(): Promise<AuthSession | null> {
           lastname_en: userData.lastname_en || '',
           firstname_th: userData.firstname_th || user.name || '',
           lastname_th: userData.lastname_th || '',
-          position_en: 'Faculty Member',
+          position_en: userData.position_en || roleLabel,
+          role: userData.role || 'faculty',
           avatar_url: user.image || '',
         },
       },
@@ -32,6 +48,7 @@ export async function getAuthSession(): Promise<AuthSession | null> {
           id: user.id,
           email: user.email,
           avatar: user.image,
+          role: userData.role || 'faculty',
         },
       },
     } as AuthSession;
@@ -49,10 +66,12 @@ export async function getAppUser(): Promise<AppUser | null> {
   if (!session) return null;
 
   const { profile } = session;
+  
   return {
     name: `${profile?.data.firstname_en || 'User'} ${profile?.data.lastname_en || ''}`.trim(),
-    role: profile?.data.position_en || 'Faculty Member',
+    role: profile?.data.role || profile?.data.position_en || 'Faculty Member',
     avatar: profile?.data.avatar_url,
+    position: profile?.data.position_en || profile?.data.role || 'Faculty Member',
   };
 }
 
