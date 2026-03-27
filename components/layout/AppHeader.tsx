@@ -94,7 +94,7 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
                 <p className="text-white dark:text-[#e8e0d8] font-semibold text-sm leading-tight">
                   {userInfo.name}
                 </p>
-                <p className="text-white/80 dark:text-muted-foreground text-xs">{userInfo.position}</p>
+                <p className="text-white/80 dark:text-[#8b7f77] text-xs">{userInfo.role}</p>
               </div>
               <div className="w-9 h-9 rounded-full bg-white dark:bg-[#3d3533] overflow-hidden flex items-center justify-center shrink-0">
                 {userInfo.avatar ? (
