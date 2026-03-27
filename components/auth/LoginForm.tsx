@@ -31,8 +31,6 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      // Better Auth (email/password) sign-in endpoint.
-      // Provided by `app/api/auth/[...all]/route.ts` via `toNextJsHandler(auth)`.
       const res = await fetch("/api/auth/sign-in/email", {
         method: "POST",
         headers: {
@@ -45,14 +43,11 @@ export default function LoginForm() {
       });
 
       if (!res.ok) {
-        // Try to read message from server; otherwise fallback to i18n strings.
         let message = "";
         try {
           const data = await res.json();
           message = data?.message || data?.error || "";
-        } catch {
-          // ignore
-        }
+        } catch { }
 
         if (res.status === 401 || res.status === 400) {
           setError(message || t("LoginPage.invalidCredentials"));
@@ -62,43 +57,6 @@ export default function LoginForm() {
         return;
       }
 
-      // Log the response for debugging
-      const responseData = await res.json();
-      console.log('[LoginForm] Sign-in response:', responseData);
-      console.log('[LoginForm] Response status:', res.status);
-      
-      // Log all response headers
-      console.log('[LoginForm] Response headers:');
-      res.headers.forEach((value, name) => {
-        console.log(`  ${name}: ${value}`);
-      });
-      
-      // Wait a bit for cookies to be set by the browser
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Check cookies after response (browser-side)
-      const cookies = document.cookie;
-      console.log('[LoginForm] Cookies after sign-in:', cookies);
-      
-      // Parse individual cookies
-      const cookieArray = cookies.split(';').map(c => c.trim());
-      console.log('[LoginForm] Cookie array:', cookieArray);
-      
-      // Verify that session cookie exists before redirecting
-      const hasSessionCookie = cookieArray.some(cookie => 
-        cookie.startsWith('better_auth.session_token=') || 
-        cookie.startsWith('better-auth.session_token=')
-      );
-      
-      console.log('[LoginForm] Has session cookie:', hasSessionCookie);
-      
-      if (!hasSessionCookie) {
-        console.warn('[LoginForm] Warning: Session cookie not found after sign-in');
-        // Give it a bit more time
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-
-      // Use window.location for a full page reload to ensure cookies are properly set
       window.location.href = "/dashboard";
     } catch {
       setError(t("LoginPage.unexpectedError"));

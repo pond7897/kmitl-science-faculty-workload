@@ -16,10 +16,14 @@ const nextConfig: NextConfig = {
     ]
   },
   allowedDevOrigins: [
-    "9pm.website",
-    "*.9pm.website",
-    "local-origin.dev",
-    "*.local-origin.dev",
+    "http://9pm.website",
+    "https://9pm.website",
+    "http://*.9pm.website",
+    "https://*.9pm.website",
+    "http://local-origin.dev",
+    "https://local-origin.dev",
+    "http://*.local-origin.dev",
+    "https://*.local-origin.dev",
   ]
 };
 

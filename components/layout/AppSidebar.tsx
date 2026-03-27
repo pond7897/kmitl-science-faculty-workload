@@ -21,6 +21,8 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth/auth-client';
 
 const menuItems = [
   { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -37,6 +39,13 @@ export function AppSidebar() {
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + '/');
   const isCollapsed = state === 'collapsed';
+
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push('/login');
+  };
 
   return (
     <Sidebar
@@ -157,15 +166,16 @@ export function AppSidebar() {
                 group-data-[collapsible=icon]:rounded-xl!
               `}
             >
-              <Link
-                href="/api/auth/sign-out"
-                className="flex items-center justify-center gap-2"
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="flex items-center justify-center gap-2 w-full"
               >
                 <span className="text-[14.5px] tracking-wide group-data-[collapsible=icon]:hidden">
                   {t('Sidebar.logout')}
                 </span>
                 <LogOut size={18} className="shrink-0" />
-              </Link>
+              </button>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

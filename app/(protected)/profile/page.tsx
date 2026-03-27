@@ -2,6 +2,8 @@ import { getAuthSession } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
 import { ProfileContent } from '@/components/profile/ProfileContent';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProfilePage() {
   const session = await getAuthSession();
 

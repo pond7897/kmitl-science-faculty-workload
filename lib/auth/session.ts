@@ -60,15 +60,6 @@ export async function getAppUser(): Promise<AppUser | null> {
  * Check whether the user is authenticated (session exists and is valid).
  */
 export async function isAuthenticated(): Promise<boolean> {
-  try {
-    const headers = await nextHeaders();
-    const session = await auth.api.getSession({
-      headers: headers,
-    });
-
-    return !!session;
-  } catch (error) {
-    console.error('[isAuthenticated] Error:', error);
-    return false;
-  }
+  const session = await getAuthSession();
+  return !!session;
 }

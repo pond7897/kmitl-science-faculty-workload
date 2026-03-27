@@ -1,48 +1,41 @@
 import { betterAuth } from 'better-auth';
-import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { PrismaClient } from '../generated/prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { prisma } from './prisma';
+import { dash } from '@better-auth/infra';
+import { admin } from 'better-auth/plugins';
 
-const prisma = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
-});
-
+// auth.ts
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
+  appName: "Kmitl Workload",
+  baseURL: 'https://9pm.website',
   secret: process.env.BETTER_AUTH_SECRET,
 
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
 
-  emailAndPassword: {
-    enabled: true,
-  },
+  emailAndPassword: { enabled: true },
 
-  // Cookie configuration for production and development
   trustedOrigins: [
-    'http://localhost:3000', 
-    'http://localhost:3001',
-    'http://9pm.website',
     'https://9pm.website',
+    'https://www.9pm.website',
+    'http://localhost:3003',
   ],
-  
-  // Advanced session configuration for cross-origin
+
   advanced: {
-    useSecureCookies: false, // Allow cookies over HTTP for development
-    cookiePrefix: 'better_auth',
-    crossSubDomainCookies: {
-      enabled: true,
+    useSecureCookies: true,
+    ipAddress: {
+      ipAddressHeaders: ['x-forwarded-for', 'x-real-ip', 'cf-connecting-ip'],
     },
   },
-  
-  // Session configuration
+
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // Update session every 24 hours
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
+    storeSessionInDatabase: true,
+    deferSessionRefresh: true,
   },
 
-  // User fields configuration
   user: {
     additionalFields: {
       firstname_th: { type: 'string' },
@@ -52,7 +45,9 @@ export const auth = betterAuth({
       iamId: { type: 'string' },
     },
   },
+
+  plugins: [
+    dash(),
+    admin()
+  ]
 });
-
-export { prisma };
-
