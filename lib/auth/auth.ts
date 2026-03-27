@@ -7,7 +7,7 @@ import { admin } from 'better-auth/plugins';
 // auth.ts
 export const auth = betterAuth({
   appName: "Kmitl Workload",
-  baseURL: 'https://9pm.website',
+  baseURL: process.env.BETTER_AUTH_BASE_URL!,
   secret: process.env.BETTER_AUTH_SECRET,
 
   database: prismaAdapter(prisma, {
@@ -20,6 +20,7 @@ export const auth = betterAuth({
     'https://9pm.website',
     'https://www.9pm.website',
     'http://localhost:3003',
+    'http://localhost:3000',
   ],
 
   advanced: {

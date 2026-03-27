@@ -14,6 +14,7 @@ interface AppHeaderProps {
     name: string;
     role: string;
     avatar?: string;
+    position?: string;
   };
 }
 
@@ -93,7 +94,7 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
                 <p className="text-white dark:text-sidebar-foreground font-semibold text-sm leading-tight">
                   {userInfo.name}
                 </p>
-                <p className="text-white/80 dark:text-muted-foreground text-xs">{userInfo.role}</p>
+                <p className="text-white/80 dark:text-muted-foreground text-xs">{userInfo.position}</p>
               </div>
               <div className="w-9 h-9 rounded-full bg-white dark:bg-sidebar-accent overflow-hidden flex items-center justify-center shrink-0">
                 {userInfo.avatar ? (

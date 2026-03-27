@@ -28,6 +28,7 @@ export interface UserProfile {
       };
     };
     minor?: string;
+    role?: string;
     avatar_url?: string;
     email?: string;
   };
@@ -56,4 +57,5 @@ export interface AppUser {
   name: string;
   role: string;
   avatar?: string;
+  position?: string;
 }
