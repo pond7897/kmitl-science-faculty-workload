@@ -27,7 +27,7 @@ model User {
   image         String?
 
   // App-specific IAM fields
-  iamId        String? @unique
+  iamId        String?   @unique
   firstname_th String?
   lastname_th  String?
   firstname_en String?
