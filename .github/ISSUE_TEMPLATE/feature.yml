@@ -1,22 +1,69 @@
-# .github/ISSUE_TEMPLATE/feature.yml
 name: "✨ Feature Request"
-description: "For new features or enhancements"
+description: "For new features or UI enhancements [FE]"
 labels: ["enhancement"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the sections below as completely as possible.
+        Add screenshots or design references where applicable.
+
   - type: textarea
     id: overview
     attributes:
       label: Overview
-      description: Brief description of the feature
+      description: |
+        Brief description of what this feature does and what page/component it belongs to.
+      placeholder: |
+        Implement the "..." page/component for ...
+        Covers ... sections.
     validations:
       required: true
+
+  - type: textarea
+    id: design-reference
+    attributes:
+      label: Design Reference (Additional)
+      description: |
+        Attach screenshots or Figma links. Use the collapsible format below.
+      value: |
+        <details>
+          <summary>View Full Page & Sections</summary>
+
+          - **Top section close-up:**
+            <!-- <img width="600" alt="Top Section" src="LINK_HERE" /> -->
+
+          - **Middle section close-up:**
+            <!-- <img width="600" alt="Middle Section" src="LINK_HERE" /> -->
+
+          - **Bottom section close-up:**
+            <!-- <img width="600" alt="Bottom Section" src="LINK_HERE" /> -->
+
+          - **Full page scroll:**
+            <!-- <img width="400" alt="Full Page" src="LINK_HERE" /> -->
+
+        </details>
+    validations:
+      required: false
 
   - type: textarea
     id: acceptance-criteria
     attributes:
       label: Acceptance Criteria
-      description: List of checkboxes for what needs to be done
-      placeholder: "- [ ] ..."
+      description: |
+        Break down into sections matching the UI. Each item should be a checkbox.
+      value: |
+        ### Section: (e.g. Page Header)
+        - [ ] ...
+        - [ ] ...
+
+        ### Section: (e.g. Main Content)
+        - [ ] ...
+        - [ ] ...
+
+        ### Actions
+        - [ ] "ยกเลิก" cancel button navigates back
+        - [ ] "บันทึกข้อมูล" save button navigates to next page
     validations:
       required: true
 
@@ -24,4 +71,12 @@ body:
     id: technical-notes
     attributes:
       label: Technical Notes
-      description: Implementation details, libraries, or constraints
+      description: |
+        Implementation details, libraries, constraints, or API integration notes.
+      placeholder: |
+        - Route suggestion: /example/:id
+        - Use React Hook Form or similar for form state
+        - Mock handler first; BE integration tracked separately
+        - Validation: required fields before proceeding
+    validations:
+      required: false
