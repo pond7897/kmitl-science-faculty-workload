@@ -1,0 +1,27 @@
+# .github/ISSUE_TEMPLATE/feature.yml
+name: "✨ Feature Request"
+description: "For new features or enhancements"
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: Overview
+      description: Brief description of the feature
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: List of checkboxes for what needs to be done
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-notes
+    attributes:
+      label: Technical Notes
+      description: Implementation details, libraries, or constraints
