@@ -53,5 +53,28 @@
     "welcome": "Welcome",
     "facultyName": "Faculty of Science",
     "noData": "No data"
+  },
+  "WorkloadForm": {
+    "title": "Workload Information",
+    "subtitle": "Current workload details",
+    "academicYear": "Academic Year",
+    "semester": "Semester",
+    "semesterLabel": "Term",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "courseCode": "Course Code",
+    "courseName": "Course Name",
+    "time": "Time",
+    "room": "Room",
+    "students": "Students",
+    "addCourse": "Add Course",
+    "downloadExcel": "Download Excel",
+    "confirmData": "Confirm",
+    "emptyState": "No workload data"
   }
 }

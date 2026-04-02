@@ -14,6 +14,7 @@ interface AppHeaderProps {
     name: string;
     role: string;
     avatar?: string;
+    position?: string;
   };
 }
 
@@ -57,12 +58,12 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
     )?.[1] ?? '';
 
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between bg-[#F27F0D] dark:bg-sidebar px-4 py-3 shadow-md dark:border-b dark:border-sidebar-border">
+    <header className="sticky top-0 z-50 flex items-center justify-between bg-[#F27F0D] dark:bg-[#252220] px-4 py-3 shadow-md dark:border-b dark:border-[#4a4441]">
       {/* Left: Sidebar trigger + breadcrumb */}
       <div className="flex items-center gap-3">
-        <SidebarTrigger className="text-white dark:text-sidebar-foreground hover:bg-orange-600 dark:hover:bg-sidebar-accent rounded-lg" />
+        <SidebarTrigger className="text-white dark:text-[#e8e0d8] hover:bg-orange-600 dark:hover:bg-[#3d3533] rounded-lg" />
         {breadcrumb && (
-          <span className="text-white/90 dark:text-sidebar-foreground text-sm font-medium hidden sm:block">
+          <span className="text-white/90 dark:text-[#e8e0d8] text-sm font-medium hidden sm:block">
             {breadcrumb}
           </span>
         )}
@@ -70,32 +71,32 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
 
       {/* Right: Utilities + User Info */}
       <div className="flex items-center gap-2">
-        <div className="[&_button]:text-white dark:[&_button]:text-sidebar-foreground [&_button:hover]:bg-orange-600 dark:[&_button:hover]:bg-sidebar-accent [&_svg]:stroke-white dark:[&_svg]:stroke-sidebar-foreground">
+        <div className="[&_button]:text-white dark:[&_button]:text-[#e8e0d8] [&_button:hover]:bg-orange-600 dark:[&_button:hover]:bg-[#3d3533] [&_svg]:stroke-white dark:[&_svg]:stroke-[#e8e0d8]">
           <LanguageSwitcher />
         </div>
-        <div className="[&_button]:text-white dark:[&_button]:text-sidebar-foreground [&_button:hover]:bg-orange-600 dark:[&_button:hover]:bg-sidebar-accent [&_svg]:stroke-white dark:[&_svg]:stroke-sidebar-foreground">
+        <div className="[&_button]:text-white dark:[&_button]:text-[#e8e0d8] [&_button:hover]:bg-orange-600 dark:[&_button:hover]:bg-[#3d3533] [&_svg]:stroke-white dark:[&_svg]:stroke-[#e8e0d8]">
           <ThemeSwitcher />
         </div>
 
         {userInfo && (
           <>
-            <div className="w-px h-6 bg-white/30 dark:bg-sidebar-border mx-1" />
+            <div className="w-px h-6 bg-white/30 dark:bg-[#4a4441] mx-1" />
             <div className="flex items-center gap-3">
               <button
                 onClick={handleLogout}
                 disabled={isLoggingOut}
-                className="text-white dark:text-sidebar-foreground hover:bg-orange-600 dark:hover:bg-sidebar-accent rounded-lg p-2 transition-colors disabled:opacity-50"
+                className="text-white dark:text-[#e8e0d8] hover:bg-orange-600 dark:hover:bg-[#3d3533] rounded-lg p-2 transition-colors disabled:opacity-50"
                 title={t('Sidebar.logout') || 'Logout'}
               >
                 <LogOut size={18} />
               </button>
               <div className="text-right hidden sm:block">
-                <p className="text-white dark:text-sidebar-foreground font-semibold text-sm leading-tight">
+                <p className="text-white dark:text-[#e8e0d8] font-semibold text-sm leading-tight">
                   {userInfo.name}
                 </p>
-                <p className="text-white/80 dark:text-muted-foreground text-xs">{userInfo.role}</p>
+                <p className="text-white/80 dark:text-[#8b7f77] text-xs">{userInfo.role}</p>
               </div>
-              <div className="w-9 h-9 rounded-full bg-white dark:bg-sidebar-accent overflow-hidden flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-full bg-white dark:bg-[#3d3533] overflow-hidden flex items-center justify-center shrink-0">
                 {userInfo.avatar ? (
                   <Image
                     src={userInfo.avatar}
@@ -105,7 +106,7 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
                     className="object-cover"
                   />
                 ) : (
-                  <span className="text-[#F27F0D] dark:text-primary font-bold text-base">
+                  <span className="text-[#F27F0D] dark:text-[#C96442] font-bold text-base">
                     {userInfo.name.charAt(0).toUpperCase()}
                   </span>
                 )}

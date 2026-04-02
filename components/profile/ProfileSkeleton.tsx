@@ -4,7 +4,7 @@ export function ProfileSkeleton() {
   return (
     <div className="w-full space-y-4 sm:space-y-6">
       {/* ── Hero card ── */}
-      <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 sm:p-8">
+      <div className="bg-white dark:bg-[#292524] rounded-2xl border border-gray-100 dark:border-[#4a4441] shadow-sm p-5 sm:p-8">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
           {/* Avatar */}
           <Skeleton className="w-24 h-24 sm:w-28 sm:h-28 rounded-full shrink-0" />
@@ -24,7 +24,7 @@ export function ProfileSkeleton() {
       </div>
 
       {/* ── Info card ── */}
-      <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 sm:p-8">
+      <div className="bg-white dark:bg-[#292524] rounded-2xl border border-gray-100 dark:border-[#4a4441] shadow-sm p-5 sm:p-8">
         {/* Section heading */}
         <div className="flex items-center gap-2 mb-5 sm:mb-6">
           <Skeleton className="w-8 h-8 rounded-lg" />

@@ -1,17 +1,20 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
+import { WorkloadForm } from '@/components/workload';
 
 export default function WorkloadFormPage() {
-  const { t } = useTranslation();
-
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('Sidebar.workloadForm')}
-        </h1>
-      </div>
-    </div>
+    <WorkloadForm
+      title="ข้อมูลภาระงาน"
+      subtitle="รายละเอียดข้อมูลภาระงานปัจจุบัน"
+      onDownloadExcel={() => {
+        console.log('Downloading Excel...');
+        // TODO: Implement Excel download logic
+      }}
+      onConfirm={() => {
+        console.log('Confirming data...');
+        // TODO: Implement confirm logic
+      }}
+    />
   );
 }

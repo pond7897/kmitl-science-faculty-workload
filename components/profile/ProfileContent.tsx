@@ -76,11 +76,11 @@ export function ProfileContent({ data, rawSession }: ProfileContentProps) {
 
       {/* ── Raw JSON (dev only) ── */}
       {process.env.NODE_ENV === 'development' && rawSession && (
-        <details className="bg-white dark:bg-[#2a2a2a] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-6">
+        <details className="bg-white dark:bg-[#292524] rounded-2xl shadow-sm border border-gray-100 dark:border-[#4a4441] p-4 sm:p-6">
           <summary className="text-sm font-medium text-gray-500 cursor-pointer select-none">
             Raw session data (dev only)
           </summary>
-          <pre className="mt-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg overflow-auto text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+          <pre className="mt-3 bg-gray-50 dark:bg-[#302826] p-3 rounded-lg overflow-auto text-xs text-gray-700 dark:text-[#e8e0d8] leading-relaxed">
             {JSON.stringify(rawSession, null, 2)}
           </pre>
         </details>

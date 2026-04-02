@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import { auth, prisma } from "@/lib/auth/auth";
+import { auth } from "@/lib/auth/auth";
+import { prisma } from "@/lib/auth/prisma";
 
 export async function POST(request: Request) {
   try {
@@ -17,6 +18,11 @@ export async function POST(request: Request) {
         email: normalizedEmail,
         password: String(password),
         name,
+        firstname_th: firstName,
+        lastname_th: lastName,
+        firstname_en: firstName,
+        lastname_en: lastName,
+        iamId: '',
       },
       headers: request.headers,
     });

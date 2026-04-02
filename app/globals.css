@@ -83,57 +83,58 @@
 
 .dark {
   /* ─── Base surfaces ───────────────────────────────────────────
-     #1B1917 → background  (darkest warm-black)
+     #1A1815 → background  (darkest warm-black)
      #292524 → card        (slightly lighter warm surface)
      #302826 → popover     (mid warm surface)
+     #C96442 → brand orange accent
   ──────────────────────────────────────────────────────────── */
-  --background: oklch(0.138 0.009 37.5);       /* #1B1917 */
-  --foreground: oklch(0.93 0.012 60);          /* warm off-white */
+  --background: #1A1815;
+  --foreground: #f0ebe5;
 
-  --card: oklch(0.185 0.01 37.5);              /* #292524 */
-  --card-foreground: oklch(0.93 0.012 60);
+  --card: #292524;
+  --card-foreground: #f0ebe5;
 
-  --popover: oklch(0.205 0.011 37.5);          /* #302826 */
-  --popover-foreground: oklch(0.93 0.012 60);
+  --popover: #302826;
+  --popover-foreground: #f0ebe5;
 
   /* ─── Brand / Primary ─────────────────────────────────────────
-     #C96442 → brand orange-red
+     #C96442 → brand orange-red (rgb(201, 100, 66))
   ──────────────────────────────────────────────────────────── */
-  --primary: oklch(0.595 0.147 37);            /* #C96442 */
-  --primary-foreground: oklch(0.97 0.005 60);  /* near-white */
+  --primary: #C96442;
+  --primary-foreground: #f0ebe5;
 
   /* ─── Secondary & Muted ──────────────────────────────────────── */
-  --secondary: oklch(0.22 0.012 37.5);         /* warm dark surface */
-  --secondary-foreground: oklch(0.85 0.01 60);
+  --secondary: #3d3533;
+  --secondary-foreground: #d4cec8;
 
-  --muted: oklch(0.22 0.012 37.5);
-  --muted-foreground: oklch(0.6 0.02 50);      /* warm grey */
+  --muted: #3d3533;
+  --muted-foreground: #8b7f77;
 
-  --accent: oklch(0.27 0.018 37.5);            /* warm hover surface */
-  --accent-foreground: oklch(0.93 0.012 60);
+  --accent: #C96442;
+  --accent-foreground: #f0ebe5;
 
   /* ─── Utility ────────────────────────────────────────────────── */
-  --destructive: oklch(0.62 0.22 22);
-  --border: oklch(0.28 0.016 37.5);            /* warm subtle border */
-  --input: oklch(0.24 0.013 37.5);             /* warm input bg */
-  --ring: oklch(0.595 0.147 37);               /* matches primary */
+  --destructive: #ef5350;
+  --border: #4a4441;
+  --input: #3d3533;
+  --ring: #C96442;
 
   /* ─── Charts ─────────────────────────────────────────────────── */
-  --chart-1: oklch(0.595 0.147 37);            /* brand orange-red */
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --chart-1: #C96442;
+  --chart-2: #b8956a;
+  --chart-3: #f4a460;
+  --chart-4: #d2691e;
+  --chart-5: #ff8c42;
 
   /* ─── Sidebar ────────────────────────────────────────────────── */
-  --sidebar: oklch(0.162 0.01 37.5);           /* between bg and card */
-  --sidebar-foreground: oklch(0.88 0.012 60);
-  --sidebar-primary: oklch(0.595 0.147 37);    /* brand color */
-  --sidebar-primary-foreground: oklch(0.97 0.005 60);
-  --sidebar-accent: oklch(0.24 0.016 37.5);    /* warm hover */
-  --sidebar-accent-foreground: oklch(0.93 0.012 60);
-  --sidebar-border: oklch(0.25 0.014 37.5);
-  --sidebar-ring: oklch(0.595 0.147 37);
+  --sidebar: #252220;
+  --sidebar-foreground: #e8e0d8;
+  --sidebar-primary: #C96442;
+  --sidebar-primary-foreground: #f0ebe5;
+  --sidebar-accent: #3d3533;
+  --sidebar-accent-foreground: #C96442;
+  --sidebar-border: #4a4441;
+  --sidebar-ring: #C96442;
 }
 
 @layer base {

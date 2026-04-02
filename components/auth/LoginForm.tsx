@@ -31,8 +31,6 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      // Better Auth (email/password) sign-in endpoint.
-      // Provided by `app/api/auth/[...all]/route.ts` via `toNextJsHandler(auth)`.
       const res = await fetch("/api/auth/sign-in/email", {
         method: "POST",
         headers: {
@@ -45,14 +43,11 @@ export default function LoginForm() {
       });
 
       if (!res.ok) {
-        // Try to read message from server; otherwise fallback to i18n strings.
         let message = "";
         try {
           const data = await res.json();
           message = data?.message || data?.error || "";
-        } catch {
-          // ignore
-        }
+        } catch { }
 
         if (res.status === 401 || res.status === 400) {
           setError(message || t("LoginPage.invalidCredentials"));
@@ -62,27 +57,7 @@ export default function LoginForm() {
         return;
       }
 
-      // Log the response for debugging
-      const responseData = await res.json();
-      console.log('[LoginForm] Sign-in response:', responseData);
-      console.log('[LoginForm] Response status:', res.status);
-      
-      // Log all response headers
-      console.log('[LoginForm] Response headers:');
-      res.headers.forEach((value, name) => {
-        console.log(`  ${name}: ${value}`);
-      });
-      
-      // Check cookies after response (browser-side)
-      const cookies = document.cookie;
-      console.log('[LoginForm] Cookies after sign-in:', cookies);
-      
-      // Parse individual cookies
-      const cookieArray = cookies.split(';').map(c => c.trim());
-      console.log('[LoginForm] Cookie array:', cookieArray);
-
-      router.replace("/dashboard");
-      router.refresh();
+      window.location.href = "/dashboard";
     } catch {
       setError(t("LoginPage.unexpectedError"));
     } finally {
@@ -96,7 +71,7 @@ export default function LoginForm() {
       <div className="space-y-1.5">
         <Label
           htmlFor="email"
-          className="text-sm font-medium text-gray-700 dark:text-orange-100/80"
+          className="text-sm font-medium text-gray-700 dark:text-[#e8e0d8]"
         >
           {t("LoginPage.email")}
         </Label>
@@ -111,12 +86,12 @@ export default function LoginForm() {
           autoFocus
           className="
             h-10
-            bg-orange-50 dark:bg-[#2A1500]
-            border-orange-200 dark:border-[#F2651A]/25
-            focus:border-[#F2651A] dark:focus:border-[#F2651A]
-            focus:ring-[#F2651A]/20 dark:focus:ring-[#F2651A]/20
-            placeholder:text-orange-300/70 dark:placeholder:text-[#F2651A]/30
-            text-gray-800 dark:text-orange-50
+            bg-orange-50 dark:bg-[#302826]
+            border-orange-200 dark:border-[#C96442]/25
+            focus:border-[#F2651A] dark:focus:border-[#C96442]
+            focus:ring-[#F2651A]/20 dark:focus:ring-[#C96442]/20
+            placeholder:text-orange-300/70 dark:placeholder:text-[#C96442]/30
+            text-gray-800 dark:text-[#f0ebe5]
           "
           aria-describedby={error ? "login-error" : undefined}
         />
@@ -126,7 +101,7 @@ export default function LoginForm() {
       <div className="space-y-1.5">
         <Label
           htmlFor="password"
-          className="text-sm font-medium text-gray-700 dark:text-orange-100/80"
+          className="text-sm font-medium text-gray-700 dark:text-[#e8e0d8]"
         >
           {t("LoginPage.password")}
         </Label>
@@ -141,12 +116,12 @@ export default function LoginForm() {
             autoComplete="current-password"
             className="
               h-10 pr-10
-              bg-orange-50 dark:bg-[#2A1500]
-              border-orange-200 dark:border-[#F2651A]/25
-              focus:border-[#F2651A] dark:focus:border-[#F2651A]
-              focus:ring-[#F2651A]/20 dark:focus:ring-[#F2651A]/20
-              placeholder:text-orange-300/70 dark:placeholder:text-[#F2651A]/30
-              text-gray-800 dark:text-orange-50
+              bg-orange-50 dark:bg-[#302826]
+              border-orange-200 dark:border-[#C96442]/25
+              focus:border-[#F2651A] dark:focus:border-[#C96442]
+              focus:ring-[#F2651A]/20 dark:focus:ring-[#C96442]/20
+              placeholder:text-orange-300/70 dark:placeholder:text-[#C96442]/30
+              text-gray-800 dark:text-[#f0ebe5]
             "
             aria-describedby={error ? "login-error" : undefined}
           />

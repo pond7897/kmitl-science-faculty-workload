@@ -53,5 +53,28 @@
     "welcome": "ยินดีต้อนรับ",
     "facultyName": "คณะวิทยาศาสตร์",
     "noData": "ไม่มีข้อมูล"
+  },
+  "WorkloadForm": {
+    "title": "ข้อมูลภาระงาน",
+    "subtitle": "รายละเอียดข้อมูลภาระงานปัจจุบัน",
+    "academicYear": "ปีการศึกษา",
+    "semester": "ภาคเรียน",
+    "semesterLabel": "เทอม",
+    "sunday": "อาทิตย์",
+    "monday": "จันทร์",
+    "tuesday": "อังคาร",
+    "wednesday": "พุธ",
+    "thursday": "พฤหัสบดี",
+    "friday": "ศุกร์",
+    "saturday": "เสาร์",
+    "courseCode": "รหัสวิชา",
+    "courseName": "ชื่อวิชา",
+    "time": "เวลา",
+    "room": "ห้อง",
+    "students": "นักศึกษา",
+    "addCourse": "เพิ่มวิชา",
+    "downloadExcel": "ดาวน์โหลด Excel",
+    "confirmData": "ยืนยันข้อมูล",
+    "emptyState": "ไม่มีข้อมูลภาระงาน"
   }
 }

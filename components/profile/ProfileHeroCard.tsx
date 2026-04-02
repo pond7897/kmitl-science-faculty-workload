@@ -44,7 +44,7 @@ export function ProfileHeroCard({ profile, userinfo }: ProfileHeroCardProps) {
     : (profile.data.firstname_en ?? fullName);
 
   return (
-    <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4 sm:p-8">
+    <div className="bg-white dark:bg-[#292524] rounded-2xl border border-gray-100 dark:border-[#4a4441] shadow-sm p-4 sm:p-8">
       <div className="flex flex-row items-center gap-4 sm:gap-6">
         {/* Avatar — sm ตอน mobile, ขยายบน desktop */}
         <ProfileAvatar src={avatarSrc} name={avatarName} size="sm" className="sm:w-28! sm:h-28! [&>span]:sm:text-5xl" />
@@ -52,13 +52,13 @@ export function ProfileHeroCard({ profile, userinfo }: ProfileHeroCardProps) {
         {/* Name block */}
         <div className="flex flex-col items-start gap-1 sm:gap-1.5 min-w-0">
           {/* Full name */}
-          <h2 className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+          <h2 className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-[#f0ebe5] leading-tight">
             {fullName || '—'}
           </h2>
 
           {/* Academic title (orange, like Figma) */}
           {academicTitle && (
-            <p className="text-xs sm:text-lg font-semibold text-[#F27F0D]">
+            <p className="text-xs sm:text-lg font-semibold text-[#F27F0D] dark:text-[#C96442]">
               {academicTitle}
             </p>
           )}
@@ -66,14 +66,14 @@ export function ProfileHeroCard({ profile, userinfo }: ProfileHeroCardProps) {
           {/* Faculty + Department chips */}
           <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-0.5 sm:mt-1">
             {facultyName && (
-              <span className="flex items-center gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                <Building2 className="w-3 h-3 sm:w-4 sm:h-4 shrink-0 text-gray-400" />
+              <span className="flex items-center gap-1 text-xs sm:text-sm text-gray-500 dark:text-[#8b7f77]">
+                <Building2 className="w-3 h-3 sm:w-4 sm:h-4 shrink-0 text-gray-400 dark:text-[#8b7f77]" />
                 {facultyName}
               </span>
             )}
             {departmentName && (
-              <span className="flex items-center gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 shrink-0 text-gray-400" />
+              <span className="flex items-center gap-1 text-xs sm:text-sm text-gray-500 dark:text-[#8b7f77]">
+                <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 shrink-0 text-gray-400 dark:text-[#8b7f77]" />
                 {departmentName}
               </span>
             )}
