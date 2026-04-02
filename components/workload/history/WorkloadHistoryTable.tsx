@@ -173,7 +173,7 @@ function StatusTimeline({
 
   return (
     <div className="bg-[#FFFBF6] px-5 py-6 md:px-8 lg:px-[50px] lg:py-[30px]">
-      <div className="grid gap-6 md:grid-cols-4 md:gap-0 md:items-start">
+      <div className="grid gap-0 md:grid-cols-4 md:gap-0 md:items-start">
         {steps.map((step, i) => {
           const circleClass = step.rejected
             ? 'bg-[#DC2626] text-white shadow-[0_8px_18px_rgba(220,38,38,0.18)]'
@@ -187,24 +187,27 @@ function StatusTimeline({
           const lineClass = step.rejected ? 'border-[#DC2626] border-solid' : step.done ? 'border-[#F27F0D] border-solid' : 'border-[#F27F0D] border-dashed';
 
           return (
-            <div key={step.label} className="flex min-w-0 flex-col items-center gap-2 text-center">
-              <div className="flex min-w-0 flex-col items-center text-center">
+            <div key={step.label} className="flex min-w-0 items-start gap-0 text-left md:flex-col md:items-center md:gap-0 md:text-center">
+              <div className="flex min-w-0 flex-col items-center">
                 <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors', circleClass)}>
                   {step.rejected ? (
                     <X className="h-4 w-4" strokeWidth={2.5} />
                   ) : step.done ? (
                     <Check className="h-4 w-4" strokeWidth={2.5} />
-                  ) : step.active ? (
-                    <CircleDashed className="h-[18px] w-[18px]" strokeWidth={2.25} />
                   ) : (
                     <CircleDashed className="h-[18px] w-[18px]" strokeWidth={2.25} />
                   )}
                 </div>
+                {i < steps.length - 1 && (
+                  <div className="my-0 flex h-10 justify-center md:hidden">
+                    <div className={cn('h-full border-l', lineClass)} />
+                  </div>
+                )}
               </div>
               <div className={cn('hidden w-full md:block', i === steps.length - 1 && 'md:w-full')}>
-                <div className={cn('w-full border-t', lineClass)} />
+                <div className={cn('w-full border-t md:mt-2', lineClass)} />
               </div>
-              <div className="space-y-0.5">
+              <div className="min-w-0 flex-1 pl-3 md:flex-none md:pt-2 md:pl-0">
                 <p className={cn('text-[14px] font-medium leading-5', titleClass)}>{step.label}</p>
                 <p className={cn('text-[10px] leading-4', detailClass)}>{step.detail}</p>
               </div>
@@ -290,86 +293,165 @@ export function WorkloadHistoryTable({
         </span>
       </div>
 
-      <Table className="min-w-[860px]">
-        <TableHeader>
-          <TableRow className="bg-muted/60 hover:bg-muted/60">
-            <TableHead className="w-[117px] px-4 text-center text-base font-medium text-muted-foreground">
-              {t('WorkloadHistory.colYear')}
-            </TableHead>
-            <TableHead className="w-[74px] px-4 text-center text-base font-medium text-muted-foreground">
-              {t('WorkloadHistory.colSemester')}
-            </TableHead>
-            <TableHead className="px-4 text-center text-base font-medium text-muted-foreground">
-              {t('WorkloadHistory.colSubmittedAt')}
-            </TableHead>
-            <TableHead className="w-[168px] px-4 text-center text-base font-medium text-muted-foreground">
-              <span className="inline-flex items-center justify-center gap-1">
-                {t('WorkloadHistory.colStatus')}
-                <ArrowUpDown className="h-4 w-4" />
-              </span>
-            </TableHead>
-            <TableHead className="w-[137px] px-4 text-center text-base font-medium text-muted-foreground">
-              {t('WorkloadHistory.colAction')}
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {records.length === 0 ? (
-            <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={5} className="py-10 text-center text-base text-muted-foreground">
-                {t('WorkloadHistory.noRecords')}
-              </TableCell>
-            </TableRow>
-          ) : (
-            records.map((record) => {
+      <div className="md:hidden">
+        {records.length === 0 ? (
+          <div className="px-4 py-10 text-center text-base text-muted-foreground">
+            {t('WorkloadHistory.noRecords')}
+          </div>
+        ) : (
+          <div className="divide-y divide-border">
+            {records.map((record) => {
               const isOpen = expandedId === record.id;
               return (
-                <Fragment key={record.id}>
-                  <TableRow className="hover:bg-transparent">
-                    <TableCell className="h-[81px] px-4 text-center text-base font-medium text-foreground">
-                      {record.year}
-                    </TableCell>
-                    <TableCell className="h-[81px] px-4 text-center text-base font-medium text-foreground">
-                      {record.semester}
-                    </TableCell>
-                    <TableCell className="h-[81px] px-4 text-center text-base font-medium text-muted-foreground">
-                      {formatDate(record.submittedAt)}
-                    </TableCell>
-                    <TableCell className="h-[81px] px-4">
-                      <div className="flex justify-center">
-                        <StatusBadge status={record.status} />
+                <div key={record.id} className="bg-card">
+                  <div className="space-y-4 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1">
+                        <p className="text-base font-semibold text-foreground">
+                          {t('WorkloadHistory.colYear')} {record.year}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {t('WorkloadHistory.colSemester')} {record.semester}
+                        </p>
                       </div>
-                    </TableCell>
-                    <TableCell className="h-[81px] px-4">
-                      <div className="flex flex-col items-end justify-center gap-[5px]">
-                        <button type="button" className="flex items-center gap-[5px] rounded-[5px] px-[10px] transition-opacity hover:opacity-70">
-                          <Eye className="h-[15px] w-[15px] text-[#F27F0D]" />
-                          <span className="text-sm font-medium leading-3 text-[#F27F0D]">
-                            {t('WorkloadHistory.btnDetails')}
-                          </span>
-                        </button>
-                        <button type="button" onClick={() => toggleExpand(record.id)} className="flex items-center gap-[3px] px-[5px] transition-opacity hover:opacity-70">
-                          <span className="text-[10px] font-normal leading-3 text-muted-foreground">
-                            {t('WorkloadHistory.btnStatus')}
-                          </span>
-                          <ChevronDown className={cn('h-[15px] w-[15px] text-muted-foreground transition-transform', isOpen && 'rotate-180')} />
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                  {isOpen && (
+                      <StatusBadge status={record.status} />
+                    </div>
+
+                    <div className="rounded-xl bg-muted/40 p-3">
+                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        {t('WorkloadHistory.colSubmittedAt')}
+                      </p>
+                      <p className="mt-1 text-sm text-foreground">
+                        {formatDate(record.submittedAt)}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2">
+                      <button type="button" className="flex items-center gap-[5px] rounded-[10px] border border-[#F27F0D]/20 px-3 py-2 transition-opacity hover:opacity-70">
+                        <Eye className="h-[15px] w-[15px] text-[#F27F0D]" />
+                        <span className="text-sm font-medium leading-3 text-[#F27F0D]">
+                          {t('WorkloadHistory.btnDetails')}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleExpand(record.id)}
+                        className="flex items-center gap-[3px] rounded-[10px] px-3 py-2 transition-opacity hover:opacity-70"
+                      >
+                        <span className="text-xs font-normal leading-3 text-muted-foreground">
+                          {t('WorkloadHistory.btnStatus')}
+                        </span>
+                        <ChevronDown className={cn('h-[15px] w-[15px] text-muted-foreground transition-transform', isOpen && 'rotate-180')} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div
+                    className={cn(
+                      'grid transition-[grid-template-rows,opacity] duration-300 ease-out',
+                      isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+                    )}
+                  >
+                    <div className="overflow-hidden">
+                      <StatusTimeline record={record} formatTimelineDate={formatTimelineDate} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="hidden md:block">
+        <Table className="min-w-[860px]">
+          <TableHeader>
+            <TableRow className="bg-muted/60 hover:bg-muted/60">
+              <TableHead className="w-[117px] px-4 text-center text-base font-medium text-muted-foreground">
+                {t('WorkloadHistory.colYear')}
+              </TableHead>
+              <TableHead className="w-[74px] px-4 text-center text-base font-medium text-muted-foreground">
+                {t('WorkloadHistory.colSemester')}
+              </TableHead>
+              <TableHead className="px-4 text-center text-base font-medium text-muted-foreground">
+                {t('WorkloadHistory.colSubmittedAt')}
+              </TableHead>
+              <TableHead className="w-[168px] px-4 text-center text-base font-medium text-muted-foreground">
+                <span className="inline-flex items-center justify-center gap-1">
+                  {t('WorkloadHistory.colStatus')}
+                  <ArrowUpDown className="h-4 w-4" />
+                </span>
+              </TableHead>
+              <TableHead className="w-[137px] px-4 text-center text-base font-medium text-muted-foreground">
+                {t('WorkloadHistory.colAction')}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {records.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={5} className="py-10 text-center text-base text-muted-foreground">
+                  {t('WorkloadHistory.noRecords')}
+                </TableCell>
+              </TableRow>
+            ) : (
+              records.map((record) => {
+                const isOpen = expandedId === record.id;
+                return (
+                  <Fragment key={record.id}>
                     <TableRow className="hover:bg-transparent">
-                      <TableCell colSpan={5} className="p-0">
-                        <StatusTimeline record={record} formatTimelineDate={formatTimelineDate} />
+                      <TableCell className="h-[81px] px-4 text-center text-base font-medium text-foreground">
+                        {record.year}
+                      </TableCell>
+                      <TableCell className="h-[81px] px-4 text-center text-base font-medium text-foreground">
+                        {record.semester}
+                      </TableCell>
+                      <TableCell className="h-[81px] px-4 text-center text-base font-medium text-muted-foreground">
+                        {formatDate(record.submittedAt)}
+                      </TableCell>
+                      <TableCell className="h-[81px] px-4">
+                        <div className="flex justify-center">
+                          <StatusBadge status={record.status} />
+                        </div>
+                      </TableCell>
+                      <TableCell className="h-[81px] px-4">
+                        <div className="flex flex-col items-end justify-center gap-[5px]">
+                          <button type="button" className="flex items-center gap-[5px] rounded-[5px] px-[10px] transition-opacity hover:opacity-70">
+                            <Eye className="h-[15px] w-[15px] text-[#F27F0D]" />
+                            <span className="text-sm font-medium leading-3 text-[#F27F0D]">
+                              {t('WorkloadHistory.btnDetails')}
+                            </span>
+                          </button>
+                          <button type="button" onClick={() => toggleExpand(record.id)} className="flex items-center gap-[3px] px-[5px] transition-opacity hover:opacity-70">
+                            <span className="text-[10px] font-normal leading-3 text-muted-foreground">
+                              {t('WorkloadHistory.btnStatus')}
+                            </span>
+                            <ChevronDown className={cn('h-[15px] w-[15px] text-muted-foreground transition-transform', isOpen && 'rotate-180')} />
+                          </button>
+                        </div>
                       </TableCell>
                     </TableRow>
-                  )}
-                </Fragment>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
+                    <TableRow className="hover:bg-transparent">
+                      <TableCell colSpan={5} className="p-0">
+                        <div
+                          className={cn(
+                            'grid transition-[grid-template-rows,opacity] duration-300 ease-out',
+                            isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+                          )}
+                        >
+                          <div className="overflow-hidden">
+                            <StatusTimeline record={record} formatTimelineDate={formatTimelineDate} />
+                          </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  </Fragment>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       <div className="border-t border-border bg-card px-4 py-4 md:px-5">
         <Pagination className="justify-between gap-3 max-md:flex-col">

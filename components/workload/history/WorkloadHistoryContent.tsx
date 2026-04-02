@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { WorkloadSummaryCards } from "./WorkloadSummaryCards";
 import { WorkloadHistoryFilter } from "./WorkloadHistoryFilter";
@@ -23,8 +23,6 @@ export function WorkloadHistoryContent({
 
   const [yearQuery, setYearQuery] = useState("");
   const [filterSemester, setFilterSemester] = useState("");
-  const [appliedYearQuery, setAppliedYearQuery] = useState("");
-  const [appliedSemester, setAppliedSemester] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const toEditCount = histories.filter(
@@ -38,8 +36,8 @@ export function WorkloadHistoryContent({
   );
 
   const filtered = histories.filter((r) => {
-    const matchYear = !appliedYearQuery || r.year.includes(appliedYearQuery);
-    const matchSemester = !appliedSemester || r.semester === appliedSemester;
+    const matchYear = !yearQuery || r.year.includes(yearQuery);
+    const matchSemester = !filterSemester || r.semester === filterSemester;
     return matchYear && matchSemester;
   });
 
@@ -50,11 +48,9 @@ export function WorkloadHistoryContent({
     safePage * ITEMS_PER_PAGE,
   );
 
-  const handleFilter = () => {
-    setAppliedYearQuery(yearQuery);
-    setAppliedSemester(filterSemester);
+  useEffect(() => {
     setCurrentPage(1);
-  };
+  }, [yearQuery, filterSemester]);
 
   // WorkloadHistoryContent.tsx
 
@@ -86,7 +82,6 @@ export function WorkloadHistoryContent({
           filterSemester={filterSemester}
           setFilterSemester={setFilterSemester}
           uniqueSemesters={uniqueSemesters}
-          onFilter={handleFilter}
         />
         <WorkloadHistoryTable
           records={paginated}
