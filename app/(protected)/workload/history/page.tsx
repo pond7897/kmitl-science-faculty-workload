@@ -1,17 +1,19 @@
-'use client';
+import { redirect } from 'next/navigation';
+import { WorkloadHistoryContent } from '@/components/workload/history/WorkloadHistoryContent';
+import { getAuthSession } from '@/lib/auth/session';
+import { getWorkloadHistoriesByUserId } from '@/lib/services/workload/history.service';
 
-import { useTranslation } from 'react-i18next';
+export const dynamic = 'force-dynamic';
 
-export default function WorkloadHistoryPage() {
-  const { t } = useTranslation();
+export default async function WorkloadHistoryPage() {
+  const session = await getAuthSession();
+  const userId = session?.userinfo?.data.id;
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('Sidebar.workloadHistory')}
-        </h1>
-      </div>
-    </div>
-  );
+  if (!userId) {
+    redirect('/login');
+  }
+
+  const workloadHistories = await getWorkloadHistoriesByUserId(userId);
+
+  return <WorkloadHistoryContent histories={workloadHistories} />;
 }
