@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useLanguage } from '@/hooks/use-language';
+import { useTranslation } from 'react-i18next';
 import { WorkloadCard } from './WorkloadCard';
 import { EmptyState } from './EmptyState';
 import { Plus, Table, ChevronDown } from 'lucide-react';
@@ -63,12 +63,11 @@ const PREVIEW_COUNT = 2;
 function DesktopColumn({
   courses,
   onAddClick,
-  isTh,
 }: {
   courses: DayColumn['courses'];
   onAddClick: () => void;
-  isTh: boolean;
 }) {
+  const { t } = useTranslation();
   // const [expanded, setExpanded] = useState(false);
   //
   // const hasMore = courses.length > PREVIEW_COUNT;
@@ -103,15 +102,13 @@ function DesktopColumn({
               {expanded ? (
                 <>
                   <ChevronDown className="h-3 w-3 rotate-180" />
-                  <span>{isTh ? 'ย่อ' : 'Show less'}</span>
+                  <span>{t('WorkloadForm.addCourse')}</span>
                 </>
               ) : (
                 <>
                   <ChevronDown className="h-3 w-3" />
                   <span>
-                    {isTh
-                      ? `+${hiddenCount} วิชาเพิ่มเติม`
-                      : `+${hiddenCount} more`}
+                    {`+${hiddenCount} ${t('WorkloadForm.addCourse')}`}
                   </span>
                 </>
               )}
@@ -122,10 +119,10 @@ function DesktopColumn({
           {/* ปุ่ม + เพิ่มวิชา */}
           <button
             onClick={onAddClick}
-            className="inline-flex h-8 w-full items-center justify-center gap-1 rounded-full border-2 border-orange-400 bg-white text-orange-500 transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533] flex-shrink-0 cursor-pointer text-xs font-semibold"
+            className="inline-flex h-8 w-full items-center justify-center gap-1 rounded-full border-2 border-orange-400 bg-white text-orange-500 transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533] shrink-0 cursor-pointer text-xs font-semibold"
           >
             <Plus className="h-3.5 w-3.5" />
-            <span>{isTh ? 'เพิ่มวิชา' : 'Add Course'}</span>
+            <span>{t('WorkloadForm.addCourse')}</span>
           </button>
         </>
       ) : (
@@ -143,17 +140,16 @@ export function WeeklyGrid({
   semesterBadge,
   onAddClick,
 }: WeeklyGridProps) {
-  const { currentLanguage } = useLanguage();
-  const isTh = currentLanguage === 'th';
+  const { t } = useTranslation();
 
   const days = [
-    { code: 'sunday', name: isTh ? 'อาทิตย์' : 'Sunday' },
-    { code: 'monday', name: isTh ? 'จันทร์' : 'Monday' },
-    { code: 'tuesday', name: isTh ? 'อังคาร' : 'Tuesday' },
-    { code: 'wednesday', name: isTh ? 'พุธ' : 'Wednesday' },
-    { code: 'thursday', name: isTh ? 'พฤหัสบดี' : 'Thursday' },
-    { code: 'friday', name: isTh ? 'ศุกร์' : 'Friday' },
-    { code: 'saturday', name: isTh ? 'เสาร์' : 'Saturday' },
+    { code: 'sunday', name: t('WorkloadForm.sunday') },
+    { code: 'monday', name: t('WorkloadForm.monday') },
+    { code: 'tuesday', name: t('WorkloadForm.tuesday') },
+    { code: 'wednesday', name: t('WorkloadForm.wednesday') },
+    { code: 'thursday', name: t('WorkloadForm.thursday') },
+    { code: 'friday', name: t('WorkloadForm.friday') },
+    { code: 'saturday', name: t('WorkloadForm.saturday') },
   ];
 
   return (
@@ -163,7 +159,7 @@ export function WeeklyGrid({
         <div className="flex items-center gap-2">
           <Table className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
           <span className="text-sm sm:text-base font-semibold text-gray-800 dark:text-[#f0ebe5]">
-            {isTh ? 'ตารางสรุปภาระงาน' : 'Workload Schedule Summary'}
+            {t('WorkloadForm.subtitle')}
           </span>
         </div>
         <span className="inline-flex items-center rounded-sm bg-[#F27F0D] px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold text-white dark:bg-[#C96442] w-fit">
@@ -200,7 +196,7 @@ export function WeeklyGrid({
                     <CourseBadge count={courses.length} />
                     {!hasCourses && (
                       <span className="text-xs text-gray-400 dark:text-[#8b7f77]">
-                        {isTh ? 'ว่าง' : 'Free'}
+                        {t('WorkloadForm.emptyState')}
                       </span>
                     )}
                   </div>
@@ -225,7 +221,7 @@ export function WeeklyGrid({
                           className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full border-2 border-orange-400 bg-white text-orange-500 text-sm font-medium transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533]"
                         >
                           <Plus className="h-4 w-4" />
-                          <span>{isTh ? 'เพิ่มวิชา' : 'Add course'}</span>
+                          <span>{t('WorkloadForm.addCourse')}</span>
                         </button>
                       </>
                     ) : (
@@ -282,7 +278,6 @@ export function WeeklyGrid({
                 key={day.code}
                 courses={courses}
                 onAddClick={() => onAddClick(day.code)}
-                isTh={isTh}
               />
             );
           })}
