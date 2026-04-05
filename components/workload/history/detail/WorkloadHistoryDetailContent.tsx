@@ -257,13 +257,13 @@ export function WorkloadHistoryDetailContent({
     courses:
       activeDay === day
         ? scheduleSessions.map(({ type, session }, index) => ({
-          id: `${detail.id}-${day}-${type}-${index}`,
-          courseCode: detail.courseCode,
-          courseName: detail.courseName,
-          time: `${session.startTime} - ${session.endTime}`,
-          room: `${type === 'theory' ? t('WorkloadHistoryDetail.sessionTheory') : t('WorkloadHistoryDetail.sessionLab')} • ${sectionLabel}`,
-          studentCount: detail.studentsRegistered,
-        }))
+            id: `${detail.id}-${day}-${type}-${index}`,
+            courseCode: detail.courseCode,
+            courseName: detail.courseName,
+            time: `${session.startTime} - ${session.endTime}`,
+            room: `${type === 'theory' ? t('WorkloadHistoryDetail.sessionTheory') : t('WorkloadHistoryDetail.sessionLab')} • ${sectionLabel}`,
+            studentCount: detail.studentsRegistered,
+          }))
         : [],
   }));
 
