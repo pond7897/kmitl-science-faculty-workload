@@ -15,6 +15,13 @@ import {
 } from "./TeachingWeeksSection";
 import type { WeekEntry } from "./TeachingWeeksSection";
 import { AdditionalSection } from "./AdditionalSection";
+import type {
+  WorkloadCourseLookupData,
+  WorkloadCourseLookupOffering,
+  WorkloadCourseLookupResponse,
+  WorkloadCourseLookupSection,
+} from "@/lib/types/workload";
+import type { SelectOption } from "@/components/ui/AppSelect";
 
 interface TimeRange {
   start: string;
@@ -39,6 +46,33 @@ interface EntryFormData {
   attachedFile: File | null;
   notes: string;
   dayOfWeek?: string; // e.g., "monday", "wednesday"
+}
+
+interface LookupSelections {
+  faculty: string;
+  major: string;
+  year: string;
+  studyGroup: string;
+}
+
+interface StudyGroupOption extends SelectOption {
+  enrolledStudents: string;
+  weeklyStudents: string;
+  lectureTime: TimeRange;
+  labTime: TimeRange;
+}
+
+interface LookupOptionsState {
+  faculties: SelectOption[];
+  majors: SelectOption[];
+  years: SelectOption[];
+  studyGroups: StudyGroupOption[];
+}
+
+interface DerivedLookupState {
+  options: LookupOptionsState;
+  selections: LookupSelections;
+  selectedGroup: StudyGroupOption | undefined;
 }
 
 const DAY_NAMES_TH: Record<string, string> = {
@@ -84,6 +118,154 @@ const MOCK_LAB_LOCKED = [
 ];
 
 const TOTAL_WEEKS = 15;
+
+const EMPTY_TIME_RANGE: TimeRange = { start: "", end: "" };
+const EMPTY_LOOKUP_OPTIONS: LookupOptionsState = {
+  faculties: [],
+  majors: [],
+  years: [],
+  studyGroups: [],
+};
+
+const formatTimeValue = (value: string) => value.slice(0, 5);
+
+const isLectureSection = (section: WorkloadCourseLookupSection) =>
+  section.teachingType === "ท";
+
+const isLabSection = (section: WorkloadCourseLookupSection) =>
+  section.teachingType === "ป";
+
+const uniqueOptions = (values: string[]) =>
+  Array.from(new Set(values.filter(Boolean))).map((value) => ({
+    value,
+    label: value,
+  }));
+
+const pickSelection = (current: string, options: SelectOption[]) => {
+  if (options.length === 0) return "";
+  if (current && options.some((option) => option.value === current)) {
+    return current;
+  }
+  return options.length === 1 ? options[0].value : "";
+};
+
+const buildStudyGroupOptions = (
+  offerings: WorkloadCourseLookupOffering[],
+): StudyGroupOption[] => {
+  const options: StudyGroupOption[] = [];
+
+  offerings.forEach((offering) => {
+    const lectureSections = offering.sections.filter(isLectureSection);
+    const labSections = offering.sections.filter(isLabSection);
+    const matchedLabIds = new Set<string>();
+
+    lectureSections.forEach((lectureSection, index) => {
+      const matchedLab =
+        labSections.find(
+          (labSection) =>
+            labSection.section === lectureSection.secPair ||
+            labSection.secPair === lectureSection.section,
+        ) ?? null;
+
+      if (matchedLab) {
+        matchedLabIds.add(matchedLab.teachTableId);
+      }
+
+      options.push({
+        value: `lecture:${lectureSection.teachTableId}:${matchedLab?.teachTableId ?? "none"}`,
+        label: matchedLab
+          ? `กลุ่ม ${index + 1} (ทฤษฎี ${lectureSection.section} / ปฏิบัติ ${matchedLab.section})`
+          : `กลุ่ม ${index + 1} (ทฤษฎี ${lectureSection.section})`,
+        enrolledStudents: String(
+          Math.max(lectureSection.enrolledCount, matchedLab?.enrolledCount ?? 0),
+        ),
+        weeklyStudents: String(
+          Math.max(lectureSection.enrolledCount, matchedLab?.enrolledCount ?? 0),
+        ),
+        lectureTime: {
+          start: formatTimeValue(lectureSection.teachTimeStart),
+          end: formatTimeValue(lectureSection.teachTimeEnd),
+        },
+        labTime: matchedLab
+          ? {
+              start: formatTimeValue(matchedLab.teachTimeStart),
+              end: formatTimeValue(matchedLab.teachTimeEnd),
+            }
+          : EMPTY_TIME_RANGE,
+      });
+    });
+
+    labSections
+      .filter((labSection) => !matchedLabIds.has(labSection.teachTableId))
+      .forEach((labSection, index) => {
+        options.push({
+          value: `lab:${labSection.teachTableId}`,
+          label: `กลุ่มแยก ${index + 1} (ปฏิบัติ ${labSection.section})`,
+          enrolledStudents: String(labSection.enrolledCount),
+          weeklyStudents: String(labSection.enrolledCount),
+          lectureTime: EMPTY_TIME_RANGE,
+          labTime: {
+            start: formatTimeValue(labSection.teachTimeStart),
+            end: formatTimeValue(labSection.teachTimeEnd),
+          },
+        });
+      });
+  });
+
+  return options;
+};
+
+const deriveLookupState = (
+  lookupData: WorkloadCourseLookupData,
+  requestedSelections: LookupSelections,
+): DerivedLookupState => {
+  const faculties = uniqueOptions(
+    lookupData.offerings.map((offering) => offering.faculty.nameTh),
+  );
+  const selectedFaculty = pickSelection(requestedSelections.faculty, faculties);
+
+  const majorOfferings = lookupData.offerings.filter(
+    (offering) => !selectedFaculty || offering.faculty.nameTh === selectedFaculty,
+  );
+  const majors = uniqueOptions(
+    majorOfferings.map((offering) => offering.curriculum.nameTh),
+  );
+  const selectedMajor = pickSelection(requestedSelections.major, majors);
+
+  const yearOfferings = majorOfferings.filter(
+    (offering) => !selectedMajor || offering.curriculum.nameTh === selectedMajor,
+  );
+  const years = uniqueOptions(yearOfferings.map((offering) => offering.classYear));
+  const selectedYear = pickSelection(requestedSelections.year, years);
+
+  const studyGroupOfferings = yearOfferings.filter(
+    (offering) => !selectedYear || offering.classYear === selectedYear,
+  );
+  const studyGroups = buildStudyGroupOptions(studyGroupOfferings);
+  const selectedStudyGroup = pickSelection(
+    requestedSelections.studyGroup,
+    studyGroups,
+  );
+  const selectedGroup = studyGroups.find(
+    (option) => option.value === selectedStudyGroup,
+  );
+
+  return {
+    options: {
+      faculties,
+      majors,
+      years,
+      studyGroups,
+    },
+    selections: {
+      faculty: selectedFaculty,
+      major: selectedMajor,
+      year: selectedYear,
+      studyGroup: selectedStudyGroup,
+    },
+    selectedGroup,
+  };
+};
 
 export function WorkloadEntryForm() {
   const router = useRouter();
@@ -137,6 +319,11 @@ export function WorkloadEntryForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [attachedFileName, setAttachedFileName] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [courseLookup, setCourseLookup] = useState<WorkloadCourseLookupData | null>(
+    null,
+  );
+  const [lookupOptions, setLookupOptions] =
+    useState<LookupOptionsState>(EMPTY_LOOKUP_OPTIONS);
 
   // โหลดข้อมูลจาก sessionStorage เมื่อกลับมาแก้ไข
   useEffect(() => {
@@ -206,6 +393,15 @@ export function WorkloadEntryForm() {
     }
   }, [dayCode]);
 
+  useEffect(() => {
+    if (!courseLookup) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      courseName: isTh ? courseLookup.courseNameTh : courseLookup.courseNameEn,
+    }));
+  }, [courseLookup, isTh]);
+
   const update = <K extends keyof EntryFormData>(
     key: K,
     value: EntryFormData[K],
@@ -265,157 +461,34 @@ export function WorkloadEntryForm() {
     });
   };
 
-  const mockCourseSearch = (
-    code: string,
-  ): Promise<{
-    name: string;
-    credits: number;
-    faculty: string;
-    major: string;
-    year: string;
-    studyGroup: string;
-    enrolledStudents: number;
-    weeklyStudents: number;
-  } | null> =>
-    new Promise((resolve) =>
-      setTimeout(() => {
-      const db: Record<
-        string,
-        {
-          name: string;
-          credits: number;
-          faculty: string;
-          major: string;
-          year: string;
-          studyGroup: string;
-          enrolledStudents: number;
-          weeklyStudents: number;
-        }
-      > = {
-          "05016202": {
-            name: "Data Systems Lab",
-            credits: 3,
-            faculty: "science",
-            major: "cs",
-            year: "2",
-            studyGroup: "a",
-            enrolledStudents: 67,
-            weeklyStudents: 60,
-          },
-          "05016203": {
-            name: "Web Development",
-            credits: 4,
-            faculty: "science",
-            major: "cs",
-            year: "3",
-            studyGroup: "b",
-            enrolledStudents: 45,
-            weeklyStudents: 40,
-          },
-          "05016204": {
-            name: "Database Management",
-            credits: 3,
-            faculty: "science",
-            major: "cs",
-            year: "2",
-            studyGroup: "c",
-            enrolledStudents: 55,
-            weeklyStudents: 50,
-          },
-          "03011401": {
-            name: "System Analyst (SA)",
-            credits: 3,
-            faculty: "engineering",
-            major: "it",
-            year: "4",
-            studyGroup: "d",
-            enrolledStudents: 30,
-            weeklyStudents: 28,
-          },
-          "01010101": {
-            name: "Calculus I",
-            credits: 4,
-            faculty: "science",
-            major: "am",
-            year: "1",
-            studyGroup: "a",
-            enrolledStudents: 80,
-            weeklyStudents: 75,
-          },
-          "01010102": {
-            name: "Linear Algebra",
-            credits: 3,
-            faculty: "science",
-            major: "am",
-            year: "1",
-            studyGroup: "b",
-            enrolledStudents: 78,
-            weeklyStudents: 72,
-          },
-          "01010201": {
-            name: "Differential Equations",
-            credits: 4,
-            faculty: "science",
-            major: "am",
-            year: "2",
-            studyGroup: "a",
-            enrolledStudents: 65,
-            weeklyStudents: 60,
-          },
-          "01010202": {
-            name: "Numerical Analysis",
-            credits: 3,
-            faculty: "science",
-            major: "am",
-            year: "2",
-            studyGroup: "c",
-            enrolledStudents: 55,
-            weeklyStudents: 50,
-          },
-          "01010301": {
-            name: "Real Analysis",
-            credits: 4,
-            faculty: "science",
-            major: "am",
-            year: "3",
-            studyGroup: "b",
-            enrolledStudents: 40,
-            weeklyStudents: 38,
-          },
-          "01010302": {
-            name: "Abstract Algebra",
-            credits: 4,
-            faculty: "science",
-            major: "am",
-            year: "3",
-            studyGroup: "d",
-            enrolledStudents: 42,
-            weeklyStudents: 40,
-          },
-          "01010401": {
-            name: "Functional Analysis",
-            credits: 3,
-            faculty: "science",
-            major: "am",
-            year: "4",
-            studyGroup: "a",
-            enrolledStudents: 25,
-            weeklyStudents: 24,
-          },
-          "01010402": {
-            name: "Topology",
-            credits: 3,
-            faculty: "science",
-            major: "am",
-            year: "4",
-            studyGroup: "b",
-            enrolledStudents: 28,
-            weeklyStudents: 26,
-          },
-        };
-        resolve(db[code.toUpperCase()] ?? null);
-      }, 500),
-    );
+  const syncLookupState = (
+    lookupData: WorkloadCourseLookupData,
+    nextSelections: Partial<LookupSelections> = {},
+  ) => {
+    const requestedSelections: LookupSelections = {
+      faculty: nextSelections.faculty ?? formData.faculty,
+      major: nextSelections.major ?? formData.major,
+      year: nextSelections.year ?? formData.year,
+      studyGroup: nextSelections.studyGroup ?? formData.studyGroup,
+    };
+    const derivedState = deriveLookupState(lookupData, requestedSelections);
+
+    setLookupOptions(derivedState.options);
+
+    setFormData((prev) => ({
+      ...prev,
+      courseName: isTh ? lookupData.courseNameTh : lookupData.courseNameEn,
+      creditUnits: lookupData.creditUnits,
+      faculty: derivedState.selections.faculty,
+      major: derivedState.selections.major,
+      year: derivedState.selections.year,
+      studyGroup: derivedState.selections.studyGroup,
+      enrolledStudents: derivedState.selectedGroup?.enrolledStudents ?? "",
+      weeklyStudents: derivedState.selectedGroup?.weeklyStudents ?? "",
+      lectureTime: derivedState.selectedGroup?.lectureTime ?? EMPTY_TIME_RANGE,
+      labTime: derivedState.selectedGroup?.labTime ?? EMPTY_TIME_RANGE,
+    }));
+  };
 
   const handleCourseSearch = async () => {
     if (!formData.courseCode) {
@@ -432,29 +505,157 @@ export function WorkloadEntryForm() {
       return next;
     });
     try {
-      const result = await mockCourseSearch(formData.courseCode);
-      if (result) {
-        setFormData((prev) => ({
-          ...prev,
-          courseName: result.name,
-          creditUnits: result.credits,
-          faculty: result.faculty,
-          major: result.major,
-          year: result.year,
-          studyGroup: result.studyGroup,
-          enrolledStudents: result.enrolledStudents.toString(),
-          weeklyStudents: result.weeklyStudents.toString(),
-        }));
-      } else {
+      const year = '2568'; // เด่ี๋ยวมาเปลี่ยน
+      const semester = '1'; // เด่ี๋ยวมาเปลี่ยน
+
+      const response = await fetch(
+        `/api/workload/course?subjectId=${encodeURIComponent(formData.courseCode)}&year=${encodeURIComponent(year)}&semester=${encodeURIComponent(semester)}`,
+        {
+          method: "GET",
+          cache: "no-store",
+        },
+      );
+
+      const result = (await response.json()) as WorkloadCourseLookupResponse;
+
+      if (!response.ok || !("data" in result)) {
+        setCourseLookup(null);
+        setLookupOptions(EMPTY_LOOKUP_OPTIONS);
         setErrors((prev) => ({
           ...prev,
-          courseCode: isTh ? "ไม่พบรหัสวิชานี้ในระบบ" : "Course not found",
+          courseCode:
+            ("error" in result ? result.error : undefined) ||
+            (isTh ? "ไม่พบรหัสวิชานี้ในระบบ" : "Course not found"),
         }));
-        setFormData((prev) => ({ ...prev, courseName: "", creditUnits: null }));
+        setFormData((prev) => ({
+          ...prev,
+          courseName: "",
+          creditUnits: null,
+          faculty: "",
+          major: "",
+          year: "",
+          studyGroup: "",
+          enrolledStudents: "",
+          weeklyStudents: "",
+          lectureTime: EMPTY_TIME_RANGE,
+          labTime: EMPTY_TIME_RANGE,
+        }));
+        return;
       }
+
+      setCourseLookup(result.data);
+      syncLookupState(result.data, {
+        faculty: "",
+        major: "",
+        year: "",
+        studyGroup: "",
+      });
+    } catch (error) {
+      console.error("Failed to search course", error);
+      setCourseLookup(null);
+      setLookupOptions(EMPTY_LOOKUP_OPTIONS);
+      setErrors((prev) => ({
+        ...prev,
+        courseCode: isTh
+          ? "ไม่สามารถค้นหารายวิชาได้ในขณะนี้"
+          : "Unable to search course right now",
+      }));
+      setFormData((prev) => ({
+        ...prev,
+        courseName: "",
+        creditUnits: null,
+        faculty: "",
+        major: "",
+        year: "",
+        studyGroup: "",
+        enrolledStudents: "",
+        weeklyStudents: "",
+        lectureTime: EMPTY_TIME_RANGE,
+        labTime: EMPTY_TIME_RANGE,
+      }));
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const handleFacultyChange = (value: string) => {
+    if (!courseLookup) {
+      update("faculty", value);
+      return;
+    }
+
+    syncLookupState(courseLookup, {
+      faculty: value,
+      major: "",
+      year: "",
+      studyGroup: "",
+    });
+  };
+
+  const handleMajorChange = (value: string) => {
+    if (!courseLookup) {
+      update("major", value);
+      return;
+    }
+
+    syncLookupState(courseLookup, {
+      faculty: formData.faculty,
+      major: value,
+      year: "",
+      studyGroup: "",
+    });
+  };
+
+  const handleYearChange = (value: string) => {
+    if (!courseLookup) {
+      update("year", value);
+      return;
+    }
+
+    syncLookupState(courseLookup, {
+      faculty: formData.faculty,
+      major: formData.major,
+      year: value,
+      studyGroup: "",
+    });
+  };
+
+  const handleStudyGroupChange = (value: string) => {
+    if (!courseLookup) {
+      update("studyGroup", value);
+      return;
+    }
+
+    syncLookupState(courseLookup, {
+      faculty: formData.faculty,
+      major: formData.major,
+      year: formData.year,
+      studyGroup: value,
+    });
+  };
+
+  const handleCourseCodeChange = (value: string) => {
+    if (value !== formData.courseCode && courseLookup) {
+      setCourseLookup(null);
+      setLookupOptions(EMPTY_LOOKUP_OPTIONS);
+      setFormData((prev) => ({
+        ...prev,
+        courseCode: value,
+        courseName: "",
+        creditUnits: null,
+        faculty: "",
+        major: "",
+        year: "",
+        studyGroup: "",
+        enrolledStudents: "",
+        weeklyStudents: "",
+        lectureTime: EMPTY_TIME_RANGE,
+        labTime: EMPTY_TIME_RANGE,
+      }));
+      return;
+    }
+
+    update("courseCode", value);
   };
 
   // ── Validation ─────────────────────────────────────────────
@@ -572,7 +773,7 @@ export function WorkloadEntryForm() {
         {/* ── 1. Course Info ── */}
         <CourseInfoSection
           courseCode={formData.courseCode}
-          onCourseCodeChange={(v) => update("courseCode", v)}
+          onCourseCodeChange={handleCourseCodeChange}
           onSearch={handleCourseSearch}
           courseName={formData.courseName}
           creditUnits={formData.creditUnits}
@@ -587,12 +788,16 @@ export function WorkloadEntryForm() {
           year={formData.year}
           studyGroup={formData.studyGroup}
           enrolledStudents={formData.enrolledStudents}
-          onFacultyChange={(v) => update("faculty", v)}
-          onMajorChange={(v) => update("major", v)}
-          onYearChange={(v) => update("year", v)}
-          onStudyGroupChange={(v) => update("studyGroup", v)}
+          facultyOptions={lookupOptions.faculties}
+          majorOptions={lookupOptions.majors}
+          yearOptions={lookupOptions.years}
+          studyGroupOptions={lookupOptions.studyGroups}
+          onFacultyChange={handleFacultyChange}
+          onMajorChange={handleMajorChange}
+          onYearChange={handleYearChange}
+          onStudyGroupChange={handleStudyGroupChange}
           onEnrolledStudentsChange={(v) => update("enrolledStudents", v)}
-          disableStudentFields={!!formData.courseName}
+          disableStudentFields={!courseLookup}
         />
 
         {/* ── 3. Teaching Info ── */}

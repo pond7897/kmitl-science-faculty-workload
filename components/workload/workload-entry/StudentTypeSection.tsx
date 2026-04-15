@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { Users } from "lucide-react";
+import { AppSelect, type SelectOption } from "@/components/ui/AppSelect";
 
 interface StudentTypeSectionProps {
   faculty: string;
@@ -10,6 +11,10 @@ interface StudentTypeSectionProps {
   year: string;
   studyGroup: string;
   enrolledStudents: string;
+  facultyOptions?: SelectOption[];
+  majorOptions?: SelectOption[];
+  yearOptions?: SelectOption[];
+  studyGroupOptions?: SelectOption[];
   onFacultyChange?: (value: string) => void;
   onMajorChange?: (value: string) => void;
   onYearChange?: (value: string) => void;
@@ -24,6 +29,10 @@ export function StudentTypeSection({
   year,
   studyGroup,
   enrolledStudents,
+  facultyOptions = [],
+  majorOptions = [],
+  yearOptions = [],
+  studyGroupOptions = [],
   onFacultyChange,
   onMajorChange,
   onYearChange,
@@ -33,41 +42,8 @@ export function StudentTypeSection({
 }: StudentTypeSectionProps) {
   const { t } = useTranslation();
 
-  const faculties = [
-    { value: "science", label: t("WorkloadEntry.facultyScience") },
-    { value: "engineering", label: t("WorkloadEntry.facultyEngineering") },
-    { value: "business", label: t("WorkloadEntry.facultyBusiness") },
-  ];
-
-  const majors = [
-    { value: "cs", label: t("WorkloadEntry.computerScience") },
-    { value: "it", label: t("WorkloadEntry.informationTechnology") },
-    { value: "ds", label: t("WorkloadEntry.dataScience") },
-    { value: "am", label: t("WorkloadEntry.appliedMathematics") },
-  ];
-
-  const years = [
-    { value: "1", label: t("WorkloadEntry.year1") },
-    { value: "2", label: t("WorkloadEntry.year2") },
-    { value: "3", label: t("WorkloadEntry.year3") },
-    { value: "4", label: t("WorkloadEntry.year4") },
-  ];
-
-  const groups = [
-    { value: "a", label: t("WorkloadEntry.group1") },
-    { value: "b", label: t("WorkloadEntry.group2") },
-    { value: "c", label: t("WorkloadEntry.group3") },
-    { value: "d", label: t("WorkloadEntry.group4") },
-  ];
-
-  const getFacultyLabel = (value: string) =>
-    faculties.find((f) => f.value === value)?.label || "-";
-  const getMajorLabel = (value: string) =>
-    majors.find((m) => m.value === value)?.label || "-";
-  const getYearLabel = (value: string) =>
-    years.find((y) => y.value === value)?.label || "-";
-  const getGroupLabel = (value: string) =>
-    groups.find((g) => g.value === value)?.label || "-";
+  const getOptionLabel = (value: string, options: SelectOption[]) =>
+    options.find((option) => option.value === value)?.label || value || "";
 
   // ตรวจสอบว่ามี onChange handler ไหม - ถ้ามี = editable, ถ้าไม่มี = readonly
   const isEditable = !!(onFacultyChange || onMajorChange || onYearChange || onStudyGroupChange);
@@ -91,22 +67,17 @@ export function StudentTypeSection({
           <Label className="text-sm sm:text-base font-medium text-gray-700 dark:text-[#e8e0d8]">
             {t("WorkloadEntry.faculty")}
           </Label>
-          {isEditable && !disableStudentFields ? (
-            <select
+          {isEditable && !disableStudentFields && facultyOptions.length > 1 ? (
+            <AppSelect
               value={faculty}
-              onChange={(e) => onFacultyChange?.(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-white text-sm text-gray-700 h-10 sm:h-11 outline-none transition-colors hover:border-orange-300 focus:border-orange-500 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] dark:hover:border-[#C96442]/60 dark:focus:border-[#C96442]"
-            >
-              <option value="">เลือกคณะ</option>
-              {faculties.map((f) => (
-                <option key={f.value} value={f.value}>
-                  {f.label}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => onFacultyChange?.(value)}
+              options={facultyOptions}
+              placeholder={t("WorkloadEntry.selectFaculty")}
+              className="h-10 sm:h-11"
+            />
           ) : (
             <div className="px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm text-gray-700 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] h-10 sm:h-11 flex items-center">
-              {faculty ? getFacultyLabel(faculty) : ""}
+              {getOptionLabel(faculty, facultyOptions)}
             </div>
           )}
         </div>
@@ -116,22 +87,17 @@ export function StudentTypeSection({
           <Label className="text-sm sm:text-base font-medium text-gray-700 dark:text-[#e8e0d8]">
             {t("WorkloadEntry.major")}
           </Label>
-          {isEditable && !disableStudentFields ? (
-            <select
+          {isEditable && !disableStudentFields && majorOptions.length > 1 ? (
+            <AppSelect
               value={major}
-              onChange={(e) => onMajorChange?.(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-white text-sm text-gray-700 h-10 sm:h-11 outline-none transition-colors hover:border-orange-300 focus:border-orange-500 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] dark:hover:border-[#C96442]/60 dark:focus:border-[#C96442]"
-            >
-              <option value="">เลือกสาขาวิชา</option>
-              {majors.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => onMajorChange?.(value)}
+              options={majorOptions}
+              placeholder={t("WorkloadEntry.selectMajor")}
+              className="h-10 sm:h-11"
+            />
           ) : (
             <div className="px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm text-gray-700 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] h-10 sm:h-11 flex items-center">
-              {major ? getMajorLabel(major) : ""}
+              {getOptionLabel(major, majorOptions)}
             </div>
           )}
         </div>
@@ -141,22 +107,17 @@ export function StudentTypeSection({
           <Label className="text-sm sm:text-base font-medium text-gray-700 dark:text-[#e8e0d8]">
             {t("WorkloadEntry.year")}
           </Label>
-          {isEditable && !disableStudentFields ? (
-            <select
+          {isEditable && !disableStudentFields && yearOptions.length > 1 ? (
+            <AppSelect
               value={year}
-              onChange={(e) => onYearChange?.(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-white text-sm text-gray-700 h-10 sm:h-11 outline-none transition-colors hover:border-orange-300 focus:border-orange-500 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] dark:hover:border-[#C96442]/60 dark:focus:border-[#C96442]"
-            >
-              <option value="">เลือกชั้นปี</option>
-              {years.map((y) => (
-                <option key={y.value} value={y.value}>
-                  {y.label}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => onYearChange?.(value)}
+              options={yearOptions}
+              placeholder={t("WorkloadEntry.selectYear")}
+              className="h-10 sm:h-11"
+            />
           ) : (
             <div className="px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm text-gray-700 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] h-10 sm:h-11 flex items-center">
-              {year ? getYearLabel(year) : ""}
+              {getOptionLabel(year, yearOptions)}
             </div>
           )}
         </div>
@@ -169,22 +130,17 @@ export function StudentTypeSection({
           <Label className="text-sm sm:text-base font-medium text-gray-700 dark:text-[#e8e0d8]">
             {t("WorkloadEntry.studyGroup")}
           </Label>
-          {isEditable && !disableStudentFields ? (
-            <select
+          {isEditable && !disableStudentFields && studyGroupOptions.length > 1 ? (
+            <AppSelect
               value={studyGroup}
-              onChange={(e) => onStudyGroupChange?.(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-white text-sm text-gray-700 h-10 sm:h-11 outline-none transition-colors hover:border-orange-300 focus:border-orange-500 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] dark:hover:border-[#C96442]/60 dark:focus:border-[#C96442]"
-            >
-              <option value="">เลือกกลุ่มเรียน</option>
-              {groups.map((g) => (
-                <option key={g.value} value={g.value}>
-                  {g.label}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => onStudyGroupChange?.(value)}
+              options={studyGroupOptions}
+              placeholder={t("WorkloadEntry.selectGroup")}
+              className="h-10 sm:h-11"
+            />
           ) : (
             <div className="px-3.5 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm text-gray-700 dark:border-[#4a4441] dark:bg-[#3d3533] dark:text-[#e8e0d8] h-10 sm:h-11 flex items-center">
-              {studyGroup ? getGroupLabel(studyGroup) : ""}
+              {getOptionLabel(studyGroup, studyGroupOptions)}
             </div>
           )}
         </div>
