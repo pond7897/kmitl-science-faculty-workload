@@ -169,9 +169,11 @@ export function WorkloadCard({
   const statusInfo =
     statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
 
+  const isEditable = status === 'draft' && Boolean(id);
+
   const handleEdit = () => {
     // Only allow editing if status is 'draft'
-    if (status !== 'draft') {
+    if (!isEditable) {
       return;
     }
     const queryParams = new URLSearchParams({
@@ -183,8 +185,6 @@ export function WorkloadCard({
     });
     router.push(`/workload/entry?${queryParams.toString()}`);
   };
-
-  const isEditable = status === 'draft';
 
   return (
     <div

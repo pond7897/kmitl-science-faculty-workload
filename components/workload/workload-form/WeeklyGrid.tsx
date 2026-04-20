@@ -27,10 +27,12 @@ interface DayColumn {
   }>;
 }
 
+export type WeeklyGridColumn = DayColumn;
+
 interface WeeklyGridProps {
   columns: DayColumn[];
   semesterBadge: string;
-  onAddClick: (dayCode: string) => void;
+  onAddClick?: (dayCode: string) => void;
   onEditClick?: (dayCode: string, courseId: string) => void;
   onRemoveClick?: (dayCode: string, courseId: string) => void;
   day?: string;
@@ -56,7 +58,19 @@ function CourseBadge({ count }: { count: number }) {
       className={`inline-flex items-center justify-center rounded-full px-1.5 min-w-4.5 h-4.5 text-[10px] font-semibold leading-none ${color}`}
     >
       {count}
-    </span>
+  </span>
+  );
+}
+
+function ReadOnlyEmptyState() {
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex min-h-28 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-3 text-center dark:border-[#4a4441] dark:bg-[#302826] sm:min-h-32 sm:p-4">
+      <p className="text-xs text-gray-500 dark:text-[#8b7f77] sm:text-sm">
+        {t('WorkloadForm.emptyState')}
+      </p>
+    </div>
   );
 }
 
@@ -73,7 +87,7 @@ function DesktopColumn({
 }: {
   dayCode: string;
   courses: DayColumn['courses'];
-  onAddClick: () => void;
+  onAddClick?: () => void;
   day?: string;
   semester?: string;
   year?: string;
@@ -104,16 +118,20 @@ function DesktopColumn({
             ))}
           </div>
 
-          <button
-            onClick={onAddClick}
-            className="inline-flex h-8 w-full items-center justify-center gap-1 rounded-full border-2 border-orange-400 bg-white text-orange-500 transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533] shrink-0 cursor-pointer text-xs font-semibold"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            <span>{t('WorkloadForm.addCourse')}</span>
-          </button>
+          {onAddClick && (
+            <button
+              onClick={onAddClick}
+              className="inline-flex h-8 w-full items-center justify-center gap-1 rounded-full border-2 border-orange-400 bg-white text-orange-500 transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533] shrink-0 cursor-pointer text-xs font-semibold"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>{t('WorkloadForm.addCourse')}</span>
+            </button>
+          )}
         </>
-      ) : (
+      ) : onAddClick ? (
         <EmptyState onAddClick={onAddClick} />
+      ) : (
+        <ReadOnlyEmptyState />
       )}
     </div>
   );
@@ -207,16 +225,20 @@ export function WeeklyGrid({
                             labWeeks={course.labWeeks}
                           />
                         ))}
-                        <button
-                          onClick={() => onAddClick(day.code)}
-                          className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full border-2 border-orange-400 bg-white text-orange-500 text-sm font-medium transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533]"
-                        >
-                          <Plus className="h-4 w-4" />
-                          <span>{t('WorkloadForm.addCourse')}</span>
-                        </button>
+                        {onAddClick && (
+                          <button
+                            onClick={() => onAddClick(day.code)}
+                            className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full border-2 border-orange-400 bg-white text-orange-500 text-sm font-medium transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533]"
+                          >
+                            <Plus className="h-4 w-4" />
+                            <span>{t('WorkloadForm.addCourse')}</span>
+                          </button>
+                        )}
                       </>
-                    ) : (
+                    ) : onAddClick ? (
                       <EmptyState onAddClick={() => onAddClick(day.code)} />
+                    ) : (
+                      <ReadOnlyEmptyState />
                     )}
                   </div>
                 </AccordionContent>
@@ -268,7 +290,7 @@ export function WeeklyGrid({
                 key={day.code}
                 dayCode={day.code}
                 courses={courses}
-                onAddClick={() => onAddClick(day.code)}
+                onAddClick={onAddClick ? () => onAddClick(day.code) : undefined}
                 day={day.code}
                 semester={semester}
                 year={year}

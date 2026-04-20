@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { WorkloadSummaryCards } from "./WorkloadSummaryCards";
 import { WorkloadHistoryFilter } from "./WorkloadHistoryFilter";
@@ -48,11 +48,15 @@ export function WorkloadHistoryContent({
     safePage * ITEMS_PER_PAGE,
   );
 
-  useEffect(() => {
+  const handleYearQueryChange = (value: string) => {
+    setYearQuery(value);
     setCurrentPage(1);
-  }, [yearQuery, filterSemester]);
+  };
 
-  // WorkloadHistoryContent.tsx
+  const handleSemesterChange = (value: string) => {
+    setFilterSemester(value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="flex w-full flex-col items-center gap-3 pt-4 md:gap-3.75 md:pt-5">
@@ -78,9 +82,9 @@ export function WorkloadHistoryContent({
         {/* Filter + Table */}
         <WorkloadHistoryFilter
           yearQuery={yearQuery}
-          setYearQuery={setYearQuery}
+          setYearQuery={handleYearQueryChange}
           filterSemester={filterSemester}
-          setFilterSemester={setFilterSemester}
+          setFilterSemester={handleSemesterChange}
           uniqueSemesters={uniqueSemesters}
         />
         <WorkloadHistoryTable
