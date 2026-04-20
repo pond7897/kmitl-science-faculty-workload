@@ -4,11 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/hooks/use-language";
-<<<<<<< HEAD
 import type { SavedCourse } from "@/lib/workload/entries";
-=======
 import { ConfirmationDialog } from "@/components/alerts";
->>>>>>> a44031f (feat: Enhance Workload Management UI and Functionality)
 import { SelectGroup } from "./SelectGroup";
 import { WeeklyGrid } from "./WeeklyGrid";
 import { ActionButtons } from "./ActionButtons";
@@ -178,15 +175,6 @@ export function WorkloadForm({
     () => searchParams.get("semester") || initialSemester,
   );
   const [isLoading, setIsLoading] = useState(false);
-<<<<<<< HEAD
-  const [isGridLoading, setIsGridLoading] = useState(initialEntries.length === 0);
-
-  const isTh = currentLanguage === "th";
-
-  const [columns, setColumns] = useState<DayColumn[]>(() =>
-    mapEntriesToColumns(initialEntries),
-  );
-=======
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const isTh = currentLanguage === "th";
@@ -204,7 +192,6 @@ export function WorkloadForm({
     };
     return initializeEmptyColumns(dayNames);
   });
->>>>>>> a44031f (feat: Enhance Workload Management UI and Functionality)
 
   useEffect(() => {
     const nextYear = searchParams.get("year");
@@ -283,10 +270,7 @@ export function WorkloadForm({
         const savedCourses: SavedCourse[] = JSON.parse(savedCoursesStr);
         console.log("✅ Loaded saved courses:", savedCourses);
 
-<<<<<<< HEAD
-=======
         // Update columns with saved courses
->>>>>>> a44031f (feat: Enhance Workload Management UI and Functionality)
         setColumns((prevColumns) => {
           const updatedColumns = prevColumns.map((col) => {
             const coursesToAdd = savedCourses.filter((course) => {
@@ -306,10 +290,7 @@ export function WorkloadForm({
           return updatedColumns;
         });
 
-<<<<<<< HEAD
-=======
         // Clear saved courses after loading
->>>>>>> a44031f (feat: Enhance Workload Management UI and Functionality)
         sessionStorage.removeItem("workloadCourses");
       } catch (error) {
         console.error("Failed to load saved courses:", error);
