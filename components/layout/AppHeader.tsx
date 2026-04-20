@@ -2,7 +2,7 @@
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useTranslation } from 'react-i18next';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
 import { LogOut } from 'lucide-react';
@@ -21,7 +21,6 @@ interface AppHeaderProps {
 export function AppHeader({ userInfo }: AppHeaderProps) {
   const { t } = useTranslation();
   const pathname = usePathname();
-  const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -52,10 +51,11 @@ export function AppHeader({ userInfo }: AppHeaderProps) {
     '/profile': t('Sidebar.profile'),
   };
 
-  const breadcrumb =
-    Object.entries(breadcrumbMap).find(
-      ([key]) => pathname === key || pathname.startsWith(key + '/')
-    )?.[1] ?? '';
+  const breadcrumb = pathname.startsWith('/workload/history/')
+    ? `${t('Sidebar.workloadHistory')} > ${t('WorkloadHistoryDetail.breadcrumb')}`
+    : Object.entries(breadcrumbMap).find(
+        ([key]) => pathname === key || pathname.startsWith(key + '/')
+      )?.[1] ?? '';
 
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between bg-[#F27F0D] dark:bg-sidebar px-4 py-3 shadow-md dark:border-b dark:border-sidebar-border">
