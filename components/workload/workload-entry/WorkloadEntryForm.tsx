@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/hooks/use-language";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,7 @@ interface TimeRange {
 }
 
 interface EntryFormData {
+  entryId?: string;
   courseCode: string;
   courseName: string;
   creditUnits: number | null;
@@ -276,6 +277,7 @@ export function WorkloadEntryForm() {
   const semester = searchParams.get("semester") || "1";
   const year = searchParams.get("year") || "2568";
   const dayCode = searchParams.get("day") || "";
+  const entryId = searchParams.get("id") || "";
   const mode = searchParams.get("mode") || "add"; // "add" or "edit"
 
   const dayNameTh = dayCode ? (DAY_NAMES_TH[dayCode] ?? dayCode) : null;
@@ -295,6 +297,7 @@ export function WorkloadEntryForm() {
     : (isEditMode ? "Edit Teaching Assignment" : "Add Teaching Assignment");
 
   const [formData, setFormData] = useState<EntryFormData>({
+    entryId: entryId || undefined,
     courseCode: "",
     courseName: "",
     creditUnits: null,
@@ -318,6 +321,7 @@ export function WorkloadEntryForm() {
   const [isSearching, setIsSearching] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [attachedFileName, setAttachedFileName] = useState<string | null>(null);
+  const [attachedFileData, setAttachedFileData] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [courseLookup, setCourseLookup] = useState<WorkloadCourseLookupData | null>(
     null,
@@ -325,73 +329,143 @@ export function WorkloadEntryForm() {
   const [lookupOptions, setLookupOptions] =
     useState<LookupOptionsState>(EMPTY_LOOKUP_OPTIONS);
 
+  const applyWeekState = useCallback((
+    weeks: Partial<WeekEntry>[] | undefined,
+    lockedWeeks: { weekNumber: number; lockedByName: string }[],
+  ) => {
+    const defaultWeeks = buildDefaultWeeks(TOTAL_WEEKS, lockedWeeks);
+
+    if (!weeks || weeks.length === 0) {
+      return defaultWeeks;
+    }
+
+    const weekMap = new Map(weeks.map((week) => [week.weekNumber, week]));
+
+    return defaultWeeks.map((week) => {
+      const restored = weekMap.get(week.weekNumber);
+
+      if (!restored) {
+        return week;
+      }
+
+      return {
+        ...week,
+        isSelected: restored.isSelected ?? week.isSelected,
+        hasSpecialLecturer:
+          restored.hasSpecialLecturer ?? week.hasSpecialLecturer,
+      };
+    });
+  }, []);
+
+  const applyLoadedFormData = useCallback((
+    parsed: Partial<EntryFormData> & {
+      attachedFileName?: string | null;
+      attachedFileData?: string | null;
+    },
+  ) => {
+    const restoredLectureWeeks = applyWeekState(
+      parsed.lectureWeeks,
+      MOCK_LECTURE_LOCKED,
+    );
+    const restoredLabWeeks = applyWeekState(parsed.labWeeks, MOCK_LAB_LOCKED);
+
+    setFormData((prev) => ({
+      ...prev,
+      entryId: parsed.entryId || prev.entryId,
+      courseCode: parsed.courseCode || "",
+      courseName: parsed.courseName || "",
+      creditUnits: parsed.creditUnits || null,
+      degreeLevel: parsed.degreeLevel || "bachelor_regular",
+      lectureTime: parsed.lectureTime || { start: "", end: "" },
+      labTime: parsed.labTime || { start: "", end: "" },
+      faculty: parsed.faculty || "",
+      major: parsed.major || "",
+      year: parsed.year || "",
+      studyGroup: parsed.studyGroup || "",
+      enrolledStudents: parsed.enrolledStudents || "",
+      weeklyStudents: parsed.weeklyStudents || "",
+      lectureWeeks: restoredLectureWeeks,
+      labWeeks: restoredLabWeeks,
+      notes: parsed.notes || "",
+      dayOfWeek: dayCode || parsed.dayOfWeek || prev.dayOfWeek,
+    }));
+
+    setAttachedFileName(parsed.attachedFileName ?? null);
+    setAttachedFileData(parsed.attachedFileData ?? null);
+    setLookupOptions({
+      faculties: parsed.faculty ? [{ value: parsed.faculty, label: parsed.faculty }] : [],
+      majors: parsed.major ? [{ value: parsed.major, label: parsed.major }] : [],
+      years: parsed.year ? [{ value: parsed.year, label: parsed.year }] : [],
+      studyGroups: parsed.studyGroup
+        ? [
+            {
+              value: parsed.studyGroup,
+              label: parsed.studyGroup,
+              enrolledStudents: parsed.enrolledStudents || "",
+              weeklyStudents: parsed.weeklyStudents || "",
+              lectureTime: parsed.lectureTime || EMPTY_TIME_RANGE,
+              labTime: parsed.labTime || EMPTY_TIME_RANGE,
+            },
+          ]
+        : [],
+    });
+  }, [applyWeekState, dayCode]);
+
   // โหลดข้อมูลจาก sessionStorage เมื่อกลับมาแก้ไข
   useEffect(() => {
     const storedData = sessionStorage.getItem("workloadEntryData");
     if (storedData) {
       try {
         const parsed = JSON.parse(storedData);
-        
-        // Restore lectureWeeks while preserving lock information
-        const defaultLectureWeeks = buildDefaultWeeks(TOTAL_WEEKS, MOCK_LECTURE_LOCKED);
-        const restoredLectureWeeks = parsed.lectureWeeks
-          ? parsed.lectureWeeks.map((week: WeekEntry) => {
-              const lockedInfo = MOCK_LECTURE_LOCKED.find(
-                (l) => l.weekNumber === week.weekNumber,
-              );
-              return {
-                ...week,
-                isLockedByOther: !!lockedInfo,
-                lockedByName: lockedInfo?.lockedByName,
-              };
-            })
-          : defaultLectureWeeks;
-
-        // Restore labWeeks while preserving lock information
-        const defaultLabWeeks = buildDefaultWeeks(TOTAL_WEEKS, MOCK_LAB_LOCKED);
-        const restoredLabWeeks = parsed.labWeeks
-          ? parsed.labWeeks.map((week: WeekEntry) => {
-              const lockedInfo = MOCK_LAB_LOCKED.find(
-                (l) => l.weekNumber === week.weekNumber,
-              );
-              return {
-                ...week,
-                isLockedByOther: !!lockedInfo,
-                lockedByName: lockedInfo?.lockedByName,
-              };
-            })
-          : defaultLabWeeks;
-
-        setFormData((prev) => ({
-          ...prev,
-          courseCode: parsed.courseCode || "",
-          courseName: parsed.courseName || "",
-          creditUnits: parsed.creditUnits || null,
-          degreeLevel: parsed.degreeLevel || "bachelor_regular",
-          lectureTime: parsed.lectureTime || { start: "", end: "" },
-          labTime: parsed.labTime || { start: "", end: "" },
-          faculty: parsed.faculty || "",
-          major: parsed.major || "",
-          year: parsed.year || "",
-          studyGroup: parsed.studyGroup || "",
-          enrolledStudents: parsed.enrolledStudents || "",
-          weeklyStudents: parsed.weeklyStudents || "",
-          lectureWeeks: restoredLectureWeeks,
-          labWeeks: restoredLabWeeks,
-          notes: parsed.notes || "",
-          dayOfWeek: dayCode || parsed.dayOfWeek || prev.dayOfWeek,
-          // attachedFile ไม่สามารถ restore ได้จาก JSON
-          // แต่เราจะเก็บชื่อไฟล์ไว้ให้ผู้ใช้เห็นได้ว่ามีไฟล์แนบไว้
-        }));
-        // เก็บชื่อไฟล์เดิม
-        if (parsed.attachedFileName) {
-          setAttachedFileName(parsed.attachedFileName);
-        }
+        applyLoadedFormData(parsed);
       } catch (error) {
         console.error("Failed to restore form data:", error);
       }
     }
-  }, [dayCode]);
+  }, [applyLoadedFormData]);
+
+  useEffect(() => {
+    const hasDraftData = !!sessionStorage.getItem("workloadEntryData");
+
+    if (!isEditMode || !entryId || hasDraftData) {
+      return;
+    }
+
+    let isCancelled = false;
+
+    const loadEntryForEdit = async () => {
+      try {
+        const response = await fetch(`/api/workload/entries/${encodeURIComponent(entryId)}`, {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load workload entry");
+        }
+
+        const payload = (await response.json()) as {
+          data?: Partial<EntryFormData> & {
+            attachedFileName?: string | null;
+            attachedFileData?: string | null;
+          };
+        };
+
+        if (!payload.data || isCancelled) {
+          return;
+        }
+
+        applyLoadedFormData(payload.data);
+      } catch (error) {
+        console.error("Failed to load workload entry for edit:", error);
+      }
+    };
+
+    loadEntryForEdit();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [applyLoadedFormData, entryId, isEditMode]);
 
   useEffect(() => {
     if (!courseLookup) return;
@@ -700,12 +774,30 @@ export function WorkloadEntryForm() {
   const handleConfirmDelete = async () => {
     setIsLoading(true);
     try {
-      // ลบข้อมูลทั้งหมดจาก sessionStorage
+      if (isEditMode && formData.entryId) {
+        const response = await fetch(
+          `/api/workload/entries/${encodeURIComponent(formData.entryId)}`,
+          {
+            method: "DELETE",
+          },
+        );
+
+        if (!response.ok) {
+          const errorData = (await response.json().catch(() => null)) as
+            | { error?: string }
+            | null;
+          throw new Error(errorData?.error || "Failed to delete workload entry");
+        }
+      }
+
+      // ลบข้อมูล draft ใน browser
       sessionStorage.removeItem("workloadEntryData");
       sessionStorage.removeItem("workloadEntryFile");
       
       // ไปหน้า workload form (ข้อมูลภาระงาน)
       router.push(`/workload/form?semester=${semester}&year=${year}`);
+    } catch (error) {
+      console.error("Failed to delete workload entry:", error);
     } finally {
       setIsLoading(false);
       setShowDeleteDialog(false);
@@ -720,8 +812,8 @@ export function WorkloadEntryForm() {
       const serializable = {
         ...formData,
         attachedFile: undefined, // File ไม่ serialize ได้
-        attachedFileName: formData.attachedFile?.name ?? null, // เก็บแค่ชื่อ
-        attachedFileData: undefined, // Don't store base64 to avoid quota issues
+        attachedFileName: formData.attachedFile?.name ?? attachedFileName ?? null,
+        attachedFileData: formData.attachedFile ? undefined : attachedFileData,
         academicYear: year,
         semester: semester,
       };
@@ -797,7 +889,7 @@ export function WorkloadEntryForm() {
           onYearChange={handleYearChange}
           onStudyGroupChange={handleStudyGroupChange}
           onEnrolledStudentsChange={(v) => update("enrolledStudents", v)}
-          disableStudentFields={!courseLookup}
+          disableStudentFields={!courseLookup && !isEditMode}
         />
 
         {/* ── 3. Teaching Info ── */}

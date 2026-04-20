@@ -101,6 +101,7 @@ model AcademicYear {
 
 model Course {
   id      String @id @default(cuid()) @map("courses_id")
+  code    String? @map("courses_code")
   name    String @map("courses_name")
   credits String
 
@@ -136,6 +137,9 @@ model TeachingSchedule {
   teachingWeeksTheory    Int    @map("teaching_weeks_theory")
   teachingWorkloadLab    Int    @map("teaching_workload_lab")
   teachingWorkloadTheory Int    @map("teaching_workload_theory")
+  note                   String?
+  attachmentFileName     String? @map("attachment_file_name")
+  attachmentFileData     String? @map("attachment_file_data")
 
   user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   year AcademicYear @relation(fields: [yearId], references: [id])

@@ -88,6 +88,7 @@ function DesktopColumn({
             {courses.map((course) => (
               <WorkloadCard
                 key={course.id}
+                id={course.id}
                 courseCode={course.courseCode}
                 courseName={course.courseName}
                 time={course.time}
@@ -192,11 +193,16 @@ export function WeeklyGrid({
                         {courses.map((course) => (
                           <WorkloadCard
                             key={course.id}
+                            id={course.id}
                             courseCode={course.courseCode}
                             courseName={course.courseName}
                             time={course.time}
                             room={course.room}
                             studentCount={course.studentCount}
+                            status={course.status}
+                            day={day.code}
+                            semester={semester}
+                            year={year}
                             lectureWeeks={course.lectureWeeks}
                             labWeeks={course.labWeeks}
                           />

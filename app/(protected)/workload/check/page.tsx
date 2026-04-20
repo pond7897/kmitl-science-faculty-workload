@@ -16,6 +16,7 @@ interface WeekEntry {
 }
 
 interface EntryFormData {
+  entryId?: string;
   courseCode: string;
   courseName: string;
   creditUnits: number | null;
@@ -64,15 +65,41 @@ export default function WorkloadCheckPage() {
 
   const handleEdit = () => {
     // กลับไปที่ entry form พร้อม mode parameter
+    const entryIdQuery = formData?.entryId ? `&id=${formData.entryId}` : "";
     router.push(
-      `/workload/entry?day=${dayOfWeek}&semester=${formData?.semester || "1"}&year=${formData?.academicYear || "2568"}&mode=${mode}`
+      `/workload/entry?day=${dayOfWeek}&semester=${formData?.semester || "1"}&year=${formData?.academicYear || "2568"}&mode=${mode}${entryIdQuery}`
     );
   };
 
   const handleConfirm = async () => {
     try {
       console.log("Form data submitted:", formData);
-      
+
+      if (!formData) {
+        throw new Error("Missing form data");
+      }
+
+      const response = await fetch("/api/workload/entries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          dayOfWeek: dayOfWeek || formData.dayOfWeek || "monday",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+
+        throw new Error(errorData?.error || "Failed to save workload entry");
+      }
+
+      /*
+      // Legacy client-only flow kept for reference.
       // Prepare course data to add to weekly grid
       if (formData) {
         const courseData = {
@@ -86,9 +113,9 @@ export default function WorkloadCheckPage() {
           year: formData.academicYear || "2568", // Default year
           dayOfWeek: dayOfWeek || formData.dayOfWeek || "monday", // Use URL param first, then form data, then default
         };
-        
+
         console.log("📦 Course to save:", courseData);
-        
+
         // Get existing courses from sessionStorage
         const existingCoursesStr = sessionStorage.getItem("workloadCourses");
         let existingCourses = [];
@@ -99,21 +126,24 @@ export default function WorkloadCheckPage() {
             console.error("Failed to parse existing courses:", e);
           }
         }
-        
+
         // Add new course
         existingCourses.push(courseData);
-        
+
         // Save updated courses back to sessionStorage
         sessionStorage.setItem("workloadCourses", JSON.stringify(existingCourses));
         console.log("✅ Saved to sessionStorage. Total courses:", existingCourses.length, existingCourses);
       }
+      */
       
       sessionStorage.removeItem("workloadEntryData");
       sessionStorage.removeItem("workloadEntryFile");
-      router.push("/workload/form");
+      router.push(
+        `/workload/form?semester=${formData.semester || "1"}&year=${formData.academicYear || "2568"}`,
+      );
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Failed to confirm. Please try again.");
+      throw error;
     }
   };
 

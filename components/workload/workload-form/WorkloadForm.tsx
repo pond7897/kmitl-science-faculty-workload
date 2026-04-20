@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/hooks/use-language";
+import type { SavedCourse } from "@/lib/workload/entries";
 import { SelectGroup } from "./SelectGroup";
 import { WeeklyGrid } from "./WeeklyGrid";
 import { ActionButtons } from "./ActionButtons";
@@ -19,7 +20,7 @@ interface DayColumn {
     time: string;
     room: string;
     studentCount: number;
-    status?: 'pending' | 'approved' | 'rejected' | 'draft' | 'selected';
+    status?: 'pending' | 'approved' | 'rejected' | 'draft';
     lectureWeeks?: number[];
     labWeeks?: number[];
   }>;
@@ -27,196 +28,132 @@ interface DayColumn {
 
 interface WorkloadFormProps {
   onConfirm?: () => void;
+  initialYear?: string;
+  initialSemester?: string;
+  initialEntries?: SavedCourse[];
 }
 
-interface SavedCourse {
-  id: string;
-  courseCode: string;
-  courseName: string;
-  time: string;
-  room: string;
-  studentCount: number;
-  dayOfWeek: string;
-  semester: string;
-  year: string;
+function createEmptyColumns(): DayColumn[] {
+  return [
+    { dayCode: "sunday", dayName: "อาทิตย์", courses: [] },
+    { dayCode: "monday", dayName: "จันทร์", courses: [] },
+    { dayCode: "tuesday", dayName: "อังคาร", courses: [] },
+    { dayCode: "wednesday", dayName: "พุธ", courses: [] },
+    { dayCode: "thursday", dayName: "พฤหัสบดี", courses: [] },
+    { dayCode: "friday", dayName: "ศุกร์", courses: [] },
+    { dayCode: "saturday", dayName: "เสาร์", courses: [] },
+  ];
+}
+
+function mapEntriesToColumns(entries: SavedCourse[]): DayColumn[] {
+  return createEmptyColumns().map((column) => ({
+    ...column,
+    courses: entries.filter((course) => course.dayOfWeek === column.dayCode),
+  }));
 }
 
 export function WorkloadForm({
   onConfirm = () => console.log("Confirm clicked"),
+  initialYear = "2569",
+  initialSemester = "1",
+  initialEntries = [],
 }: WorkloadFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
-  const [academicYear, setAcademicYear] = useState<string>("2569");
-  const [semester, setSemester] = useState<string>("1");
+  const [academicYear, setAcademicYear] = useState<string>(
+    () => searchParams.get("year") || initialYear,
+  );
+  const [semester, setSemester] = useState<string>(
+    () => searchParams.get("semester") || initialSemester,
+  );
   const [isLoading, setIsLoading] = useState(false);
+  const [isGridLoading, setIsGridLoading] = useState(initialEntries.length === 0);
 
   const isTh = currentLanguage === "th";
 
-  // Mock data for demonstration with state management
-  const [columns, setColumns] = useState<DayColumn[]>([
-    {
-      dayCode: "sunday",
-      dayName: "อาทิตย์",
-      courses: [],
-    },
-    {
-      dayCode: "monday",
-      dayName: "จันทร์",
-      courses: [
-        {
-          id: "1",
-          courseCode: "05016208",
-          courseName: "Data Systems Lab",
-          time: "13:00 - 16:00",
-          room: "Lab : A",
-          studentCount: 48,
-          status: "pending",
-          lectureWeeks: [1, 2, 3, 4, 5],
-          labWeeks: [1, 2, 3, 4, 5, 6, 7],
-        },
-      ],
-    },
-    {
-      dayCode: "tuesday",
-      dayName: "อังคาร",
-      courses: [
-        {
-          id: "2",
-          courseCode: "05016209",
-          courseName: "Data Systems Lab",
-          time: "13:00 - 16:00",
-          room: "Lab : A",
-          studentCount: 48,
-          status: "approved",
-          lectureWeeks: [1, 2, 3, 4, 5, 6, 7, 8],
-          labWeeks: [1, 2, 3, 4, 5, 6, 7, 8],
-        },
-        {
-          id: "3",
-          courseCode: "CS205",
-          courseName: "Web Development",
-          time: "09:00 - 11:00",
-          room: "Room 101",
-          studentCount: 35,
-          status: "rejected",
-          lectureWeeks: [1, 2, 3],
-          labWeeks: [],
-        },
-        {
-          id: "4",
-          courseCode: "CS206",
-          courseName: "Database Management",
-          time: "11:00 - 13:00",
-          room: "Room 102",
-          studentCount: 40,
-          status: "draft",
-          lectureWeeks: [],
-          labWeeks: [],
-        },
-        {
-          id: "5",
-          courseCode: "CS207",
-          courseName: "Software Engineering",
-          time: "13:00 - 15:00",
-          room: "Lab : B",
-          studentCount: 32,
-          status: "selected",
-          lectureWeeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-          labWeeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        },
-        {
-          id: "6",
-          courseCode: "CS208",
-          courseName: "Mobile Development",
-          time: "15:00 - 17:00",
-          room: "Lab : C",
-          studentCount: 28,
-          status: "draft",
-          lectureWeeks: [3, 4, 5],
-          labWeeks: [3, 4, 5, 6, 7],
-        },
-        {
-          id: "7",
-          courseCode: "CS209",
-          courseName: "Cloud Computing",
-          time: "09:00 - 10:30",
-          room: "Room 103",
-          studentCount: 25,
-          status: "selected",
-          lectureWeeks: [6, 7, 8, 9, 10],
-          labWeeks: [6, 7, 8, 9, 10, 11],
-        },
-        {
-          id: "11",
-          courseCode: "CS213",
-          courseName: "Advanced Algorithms",
-          time: "16:00 - 17:30",
-          room: "Room 107",
-          studentCount: 20,
-          status: "draft",
-          lectureWeeks: [],
-          labWeeks: [],
-        },
-      ],
-    },
-    {
-      dayCode: "wednesday",
-      dayName: "พุธ",
-      courses: [],
-    },
-    {
-      dayCode: "thursday",
-      dayName: "พฤหัสบดี",
-      courses: [
-        {
-          id: "4",
-          courseCode: "05016211",
-          courseName: "Data Systems Lab",
-          time: "13:00 - 16:00",
-          room: "Lab : A",
-          studentCount: 48,
-          status: "draft",
-          lectureWeeks: [],
-          labWeeks: [],
-        },
-      ],
-    },
-    {
-      dayCode: "friday",
-      dayName: "ศุกร์",
-      courses: [
-        {
-          id: "5",
-          courseCode: "05016210",
-          courseName: "Data Systems Lab",
-          time: "13:00 - 16:00",
-          room: "Lab : A",
-          studentCount: 48,
-          status: "selected",
-          lectureWeeks: [8, 9, 10, 11, 12, 13],
-          labWeeks: [8, 9, 10, 11, 12, 13, 14, 15],
-        },
-      ],
-    },
-    {
-      dayCode: "saturday",
-      dayName: "เสาร์",
-      courses: [],
-    },
-  ]);
+  const [columns, setColumns] = useState<DayColumn[]>(() =>
+    mapEntriesToColumns(initialEntries),
+  );
 
-  // Load saved courses from sessionStorage when component mounts
+  useEffect(() => {
+    const nextYear = searchParams.get("year");
+    const nextSemester = searchParams.get("semester");
+
+    if (nextYear) {
+      setAcademicYear(nextYear);
+    }
+
+    if (nextSemester) {
+      setSemester(nextSemester);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    const matchesInitialSelection =
+      academicYear === initialYear && semester === initialSemester;
+
+    if (matchesInitialSelection) {
+      setColumns(mapEntriesToColumns(initialEntries));
+      setIsGridLoading(false);
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    const loadEntries = async () => {
+      setIsGridLoading(true);
+
+      try {
+        const response = await fetch(
+          `/api/workload/entries?year=${encodeURIComponent(academicYear)}&semester=${encodeURIComponent(semester)}`,
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to load workload entries");
+        }
+
+        const data = (await response.json()) as { entries?: SavedCourse[] };
+        const savedCourses = data.entries ?? [];
+
+        if (isCancelled) {
+          return;
+        }
+
+        setColumns(mapEntriesToColumns(savedCourses));
+      } catch (error) {
+        console.error("Failed to load workload entries:", error);
+
+        if (!isCancelled) {
+          setColumns(createEmptyColumns());
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsGridLoading(false);
+        }
+      }
+    };
+
+    loadEntries();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [academicYear, semester, initialEntries, initialSemester, initialYear]);
+
+  /*
+  // Legacy sessionStorage-based load kept for reference.
   useEffect(() => {
     const savedCoursesStr = sessionStorage.getItem("workloadCourses");
     console.log("Checking for saved courses in sessionStorage...");
-    
+
     if (savedCoursesStr) {
       try {
         const savedCourses: SavedCourse[] = JSON.parse(savedCoursesStr);
         console.log("✅ Loaded saved courses:", savedCourses);
-        
-        // Update columns with saved courses
+
         setColumns((prevColumns) => {
           const updatedColumns = prevColumns.map((col) => {
             const coursesToAdd = savedCourses.filter((course) => {
@@ -224,7 +161,7 @@ export function WorkloadForm({
               console.log(`Filtering course ${course.courseCode} (dayOfWeek=${course.dayOfWeek}) for ${col.dayCode}: ${matches}`);
               return matches;
             });
-            
+
             return {
               ...col,
               courses: [
@@ -236,8 +173,7 @@ export function WorkloadForm({
           console.log("Updated columns:", updatedColumns);
           return updatedColumns;
         });
-        
-        // Clear saved courses after loading
+
         sessionStorage.removeItem("workloadCourses");
       } catch (error) {
         console.error("Failed to load saved courses:", error);
@@ -246,6 +182,7 @@ export function WorkloadForm({
       console.log("❌ No saved courses found in sessionStorage");
     }
   }, []);
+  */
 
   const currentYear = 2569;
   const academicYearOptions = Array.from({ length: 6 }, (_, i) => {
@@ -326,6 +263,11 @@ export function WorkloadForm({
 
       {/* Weekly Grid */}
       <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-5 sm dark:border-[#4a4441] dark:bg-[#302826]">
+        {isGridLoading && (
+          <p className="mb-3 text-sm text-gray-500 dark:text-[#8b7f77]">
+            {t("Common.loading", { defaultValue: "Loading..." })}
+          </p>
+        )}
         <WeeklyGrid
           columns={columns}
           semesterBadge={

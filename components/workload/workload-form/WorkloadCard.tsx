@@ -197,6 +197,7 @@ function WeekMiniGrid({
 // WorkloadCard — Main Export
 // ─────────────────────────────────────────────────────────
 export function WorkloadCard({
+  id,
   courseCode,
   courseName,
   time,
@@ -215,6 +216,7 @@ export function WorkloadCard({
 
   const handleEdit = () => {
     const queryParams = new URLSearchParams({
+      ...(id ? { id } : {}),
       day,
       semester,
       year,
