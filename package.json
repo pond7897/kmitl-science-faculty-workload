@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --bun next dev",
+    "prebuild": "prisma generate",
     "build": "bun --bun next build",
     "start": "bun --bun next start",
     "lint": "eslint",
@@ -11,6 +12,7 @@
     "test:screenshots": "bunx playwright test tests/login-screenshots.spec.ts"
   },
   "dependencies": {
+    "@better-auth/infra": "^0.1.13",
     "@headlessui/react": "^2.2.9",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
@@ -22,7 +24,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-query-devtools": "^5.91.2",
-    "better-auth": "^1.5.5",
+    "better-auth": "^1.5.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "i18next": "^25.8.18",
