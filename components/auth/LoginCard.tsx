@@ -19,10 +19,10 @@ export function LoginCard({ children }: Props) {
       <div
         className="
           relative
-          bg-white dark:bg-[#1C1208]
+          bg-white dark:bg-[#292524]
           rounded-2xl
-          shadow-xl shadow-[#F2651A]/10 dark:shadow-[#F2651A]/20
-          border border-orange-100 dark:border-[#F2651A]/15
+          shadow-xl shadow-[#F2651A]/10 dark:shadow-[#C96442]/20
+          border border-orange-100 dark:border-[#C96442]/15
           p-8 space-y-6
           overflow-hidden
         "
@@ -41,7 +41,7 @@ export function LoginCard({ children }: Props) {
           className="
             pointer-events-none absolute -top-20 -right-20
             w-56 h-56 rounded-full
-            bg-[#F2651A]/6 dark:bg-[#F2651A]/10
+            bg-[#C96442]/6 dark:bg-[#C96442]/10
             blur-3xl
           "
           aria-hidden="true"

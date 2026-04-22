@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Anuphan } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/components/providers/I18nProvider";
+import { ToastProvider } from "@/components/providers/ToastProvider";
 
 const anuphan = Anuphan({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -31,6 +32,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${anuphan.variable} antialiased font-sans`}>
+        <ToastProvider />
         <I18nProvider>{children}</I18nProvider>
       </body>
     </html>

@@ -71,7 +71,7 @@ export default function LoginForm() {
       <div className="space-y-1.5">
         <Label
           htmlFor="email"
-          className="text-sm font-medium text-gray-700 dark:text-orange-100/80"
+          className="text-sm font-medium text-gray-700 dark:text-[#e8e0d8]"
         >
           {t("LoginPage.email")}
         </Label>
@@ -86,12 +86,12 @@ export default function LoginForm() {
           autoFocus
           className="
             h-10
-            bg-orange-50 dark:bg-[#2A1500]
-            border-orange-200 dark:border-[#F2651A]/25
-            focus:border-[#F2651A] dark:focus:border-[#F2651A]
-            focus:ring-[#F2651A]/20 dark:focus:ring-[#F2651A]/20
-            placeholder:text-orange-300/70 dark:placeholder:text-[#F2651A]/30
-            text-gray-800 dark:text-orange-50
+            bg-orange-50 dark:bg-[#302826]
+            border-orange-200 dark:border-[#C96442]/25
+            focus:border-[#F2651A] dark:focus:border-[#C96442]
+            focus:ring-[#F2651A]/20 dark:focus:ring-[#C96442]/20
+            placeholder:text-orange-300/70 dark:placeholder:text-[#C96442]/30
+            text-gray-800 dark:text-[#f0ebe5]
           "
           aria-describedby={error ? "login-error" : undefined}
         />
@@ -101,7 +101,7 @@ export default function LoginForm() {
       <div className="space-y-1.5">
         <Label
           htmlFor="password"
-          className="text-sm font-medium text-gray-700 dark:text-orange-100/80"
+          className="text-sm font-medium text-gray-700 dark:text-[#e8e0d8]"
         >
           {t("LoginPage.password")}
         </Label>
@@ -116,12 +116,12 @@ export default function LoginForm() {
             autoComplete="current-password"
             className="
               h-10 pr-10
-              bg-orange-50 dark:bg-[#2A1500]
-              border-orange-200 dark:border-[#F2651A]/25
-              focus:border-[#F2651A] dark:focus:border-[#F2651A]
-              focus:ring-[#F2651A]/20 dark:focus:ring-[#F2651A]/20
-              placeholder:text-orange-300/70 dark:placeholder:text-[#F2651A]/30
-              text-gray-800 dark:text-orange-50
+              bg-orange-50 dark:bg-[#302826]
+              border-orange-200 dark:border-[#C96442]/25
+              focus:border-[#F2651A] dark:focus:border-[#C96442]
+              focus:ring-[#F2651A]/20 dark:focus:ring-[#C96442]/20
+              placeholder:text-orange-300/70 dark:placeholder:text-[#C96442]/30
+              text-gray-800 dark:text-[#f0ebe5]
             "
             aria-describedby={error ? "login-error" : undefined}
           />

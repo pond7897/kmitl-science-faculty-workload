@@ -1,17 +1,37 @@
-'use client';
+'use server';
 
-import { useTranslation } from 'react-i18next';
+import { WorkloadForm } from '@/components/workload';
+import { getAuthSession } from '@/lib/auth/session';
+import { getWorkloadEntriesForUser } from '@/lib/workload/entries';
 
-export default function WorkloadFormPage() {
-  const { t } = useTranslation();
+interface WorkloadFormPageProps {
+  searchParams?: Promise<{
+    year?: string;
+    semester?: string;
+  }>;
+}
+
+export default async function WorkloadFormPage({
+  searchParams,
+}: WorkloadFormPageProps) {
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const initialYear = resolvedSearchParams.year || '2569';
+  const initialSemester = resolvedSearchParams.semester || '1';
+  const session = await getAuthSession();
+  const userId = session?.userinfo?.data?.id;
+  const initialEntries = userId
+    ? await getWorkloadEntriesForUser({
+        userId,
+        year: Number.parseInt(initialYear, 10) || 2569,
+        semester: Number.parseInt(initialSemester, 10) || 1,
+      })
+    : [];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('Sidebar.workloadForm')}
-        </h1>
-      </div>
-    </div>
+    <WorkloadForm
+      initialYear={initialYear}
+      initialSemester={initialSemester}
+      initialEntries={initialEntries}
+    />
   );
 }

@@ -25,7 +25,7 @@ export function ProfileAvatar({ src, name, size = 'lg', className }: ProfileAvat
     <div
       className={cn(
         wrapper,
-        'relative rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden ring-4 ring-[#F27F0D]/30 dark:ring-[#F27F0D]/20 shadow-md shrink-0',
+        'relative rounded-full bg-gray-100 dark:bg-[#3d3533] flex items-center justify-center overflow-hidden ring-4 ring-[#F27F0D]/30 dark:ring-[#C96442]/20 shadow-md shrink-0',
         className,
       )}
     >
@@ -38,9 +38,9 @@ export function ProfileAvatar({ src, name, size = 'lg', className }: ProfileAvat
           sizes="(max-width: 640px) 96px, 112px"
         />
       ) : initial ? (
-        <span className={cn(text, 'font-bold text-[#F27F0D]')}>{initial}</span>
+        <span className={cn(text, 'font-bold text-[#F27F0D] dark:text-[#C96442]')}>{initial}</span>
       ) : (
-        <User className={cn(icon, 'text-gray-400 dark:text-gray-500')} />
+        <User className={cn(icon, 'text-gray-400 dark:text-[#8b7f77]')} />
       )}
     </div>
   );

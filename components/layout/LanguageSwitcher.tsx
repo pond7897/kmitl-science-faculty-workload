@@ -41,7 +41,7 @@ export function LanguageSwitcher() {
       <button
         ref={buttonRef}
         onClick={handleToggle}
-        className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2 transition-colors text-sm text-gray-600 dark:text-gray-400"
+        className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-[#3d3533] rounded-md px-3 py-2 transition-colors text-sm text-gray-600 dark:text-[#e8e0d8]"
       >
         <Globe className="w-5 h-5" />
         <span className="hidden sm:inline">{currentLang.label}</span>
@@ -56,23 +56,23 @@ export function LanguageSwitcher() {
           />
           {/* Dropdown */}
           <div
-            className="fixed w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[9999]"
+            className="fixed w-48 bg-white dark:bg-[#292524] rounded-md shadow-lg border border-gray-200 dark:border-[#4a4441] z-[9999]"
             style={{ top: dropdownPos.top, right: dropdownPos.right }}
           >
             <div className="py-1">
-              <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
+              <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-[#8b7f77] uppercase">
                 {t('Languages.language')}
               </div>
-              <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+              <div className="border-t border-gray-200 dark:border-[#4a4441] my-1"></div>
               {languages.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageChange(lang.code)}
-                  className="flex items-center justify-between w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="flex items-center justify-between w-full px-3 py-2 text-sm text-gray-700 dark:text-[#e8e0d8] hover:bg-gray-100 dark:hover:bg-[#3d3533] transition-colors"
                 >
                   <span>{lang.label}</span>
                   {currentLanguage === lang.code && (
-                    <Check className="w-4 h-4 text-orange-600" />
+                    <Check className="w-4 h-4 text-orange-600 dark:text-[#C96442]" />
                   )}
                 </button>
               ))}

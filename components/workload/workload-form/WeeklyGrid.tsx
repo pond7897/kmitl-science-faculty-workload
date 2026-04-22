@@ -1,0 +1,282 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
+import { WorkloadCard } from './WorkloadCard';
+import { EmptyState } from './EmptyState';
+import { Plus, Table } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+
+interface DayColumn {
+  dayCode: string;
+  dayName: string;
+  courses: Array<{
+    id: string;
+    courseCode: string;
+    courseName: string;
+    time: string;
+    room: string;
+    studentCount: number;
+    status?: 'pending' | 'approved' | 'rejected' | 'draft';
+    lectureWeeks?: number[];
+    labWeeks?: number[];
+  }>;
+}
+
+interface WeeklyGridProps {
+  columns: DayColumn[];
+  semesterBadge: string;
+  onAddClick: (dayCode: string) => void;
+  onEditClick?: (dayCode: string, courseId: string) => void;
+  onRemoveClick?: (dayCode: string, courseId: string) => void;
+  day?: string;
+  semester?: string;
+  year?: string;
+}
+
+// ────────────────────────────────────────────────────────────
+// Badge แสดงจำนวนวิชา — เปลี่ยนสีตามความหนาแน่น
+// ────────────────────────────────────────────────────────────
+function CourseBadge({ count }: { count: number }) {
+  if (count === 0) return null;
+
+  const color =
+    count >= 6
+      ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+      : count >= 3
+      ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+      : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300';
+
+  return (
+    <span
+      className={`inline-flex items-center justify-center rounded-full px-1.5 min-w-4.5 h-4.5 text-[10px] font-semibold leading-none ${color}`}
+    >
+      {count}
+    </span>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// Desktop Column
+// ────────────────────────────────────────────────────────────
+function DesktopColumn({
+  dayCode,
+  courses,
+  onAddClick,
+  day,
+  semester,
+  year,
+}: {
+  dayCode: string;
+  courses: DayColumn['courses'];
+  onAddClick: () => void;
+  day?: string;
+  semester?: string;
+  year?: string;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex flex-col gap-1.5 p-1.5 pb-4">
+      {courses.length > 0 ? (
+        <>
+          <div className="flex flex-col gap-1.5">
+            {courses.map((course) => (
+              <WorkloadCard
+                key={course.id}
+                id={course.id}
+                courseCode={course.courseCode}
+                courseName={course.courseName}
+                time={course.time}
+                room={course.room}
+                studentCount={course.studentCount}
+                status={course.status}
+                day={day || dayCode}
+                semester={semester}
+                year={year}
+                lectureWeeks={course.lectureWeeks}
+                labWeeks={course.labWeeks}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={onAddClick}
+            className="inline-flex h-8 w-full items-center justify-center gap-1 rounded-full border-2 border-orange-400 bg-white text-orange-500 transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533] shrink-0 cursor-pointer text-xs font-semibold"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>{t('WorkloadForm.addCourse')}</span>
+          </button>
+        </>
+      ) : (
+        <EmptyState onAddClick={onAddClick} />
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// WeeklyGrid — Main Export
+// ────────────────────────────────────────────────────────────
+export function WeeklyGrid({
+  columns,
+  semesterBadge,
+  onAddClick,
+  semester,
+  year,
+}: WeeklyGridProps) {
+  const { t } = useTranslation();
+
+  const days = [
+    { code: 'sunday', name: t('WorkloadForm.sunday') },
+    { code: 'monday', name: t('WorkloadForm.monday') },
+    { code: 'tuesday', name: t('WorkloadForm.tuesday') },
+    { code: 'wednesday', name: t('WorkloadForm.wednesday') },
+    { code: 'thursday', name: t('WorkloadForm.thursday') },
+    { code: 'friday', name: t('WorkloadForm.friday') },
+    { code: 'saturday', name: t('WorkloadForm.saturday') },
+  ];
+
+  return (
+    <div className="space-y-3 sm:space-y-4">
+      {/* ── Section Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+        <div className="flex items-center gap-2">
+          <Table className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
+          <span className="text-sm sm:text-base font-semibold text-gray-800 dark:text-[#f0ebe5]">
+            {t('WorkloadForm.subtitle')}
+          </span>
+        </div>
+        <span className="inline-flex items-center rounded-sm bg-[#F27F0D] px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold text-white dark:bg-[#C96442] w-fit">
+          {semesterBadge}
+        </span>
+      </div>
+
+      {/* ════════════════════════════════════════
+          MOBILE/TABLET VIEW — shadcn/ui Accordion (< lg)
+          ════════════════════════════════════════ */}
+      <div className="lg:hidden pb-2">
+        <Accordion type="multiple" defaultValue={[]} className="space-y-2">
+          {days.map((day) => {
+            const column = columns.find((c) => c.dayCode === day.code);
+            const courses = column?.courses ?? [];
+            const hasCourses = courses.length > 0;
+
+            return (
+              <AccordionItem
+                key={day.code}
+                value={day.code}
+                className="border border-gray-200 dark:border-[#4a4441] rounded-xl"
+              >
+                <AccordionTrigger className="px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#302826] hover:bg-gray-100 dark:hover:bg-[#3d3533] hover:no-underline data-[state=open]:rounded-b-none data-[state=open]:bg-gray-100 dark:data-[state=open]:bg-[#3d3533]">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-sm font-semibold text-gray-800 dark:text-[#f0ebe5]">
+                      {day.name}
+                    </span>
+                    <CourseBadge count={courses.length} />
+                    {!hasCourses && (
+                      <span className="text-xs text-gray-400 dark:text-[#8b7f77]">
+                        {t('WorkloadForm.emptyState')}
+                      </span>
+                    )}
+                  </div>
+                </AccordionTrigger>
+
+                <AccordionContent className="p-3 rounded-b-xl bg-white dark:bg-[#292524]">
+                  <div className="space-y-2">
+                    {hasCourses ? (
+                      <>
+                        {courses.map((course) => (
+                          <WorkloadCard
+                            key={course.id}
+                            id={course.id}
+                            courseCode={course.courseCode}
+                            courseName={course.courseName}
+                            time={course.time}
+                            room={course.room}
+                            studentCount={course.studentCount}
+                            status={course.status}
+                            day={day.code}
+                            semester={semester}
+                            year={year}
+                            lectureWeeks={course.lectureWeeks}
+                            labWeeks={course.labWeeks}
+                          />
+                        ))}
+                        <button
+                          onClick={() => onAddClick(day.code)}
+                          className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full border-2 border-orange-400 bg-white text-orange-500 text-sm font-medium transition-all hover:bg-orange-50 hover:border-orange-500 dark:bg-[#302826] dark:border-[#C96442] dark:text-[#C96442] dark:hover:bg-[#3d3533]"
+                        >
+                          <Plus className="h-4 w-4" />
+                          <span>{t('WorkloadForm.addCourse')}</span>
+                        </button>
+                      </>
+                    ) : (
+                      <EmptyState onAddClick={() => onAddClick(day.code)} />
+                    )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+      </div>
+
+      {/* ════════════════════════════════════════
+          DESKTOP VIEW — 7-column grid (≥ lg)
+          ════════════════════════════════════════ */}
+      <div className="hidden lg:block -mx-4 sm:-mx-5">
+        {/* Header row */}
+        <div className="grid grid-cols-7 bg-gray-100 dark:bg-[#3d3533] border-y border-gray-200 dark:border-[#4a4441]">
+          {days.map((day) => {
+            const column = columns.find((c) => c.dayCode === day.code);
+            const count = column?.courses.length ?? 0;
+
+            return (
+              <div key={day.code} className="py-2 sm:py-3 text-center">
+                <div className="flex items-center justify-center gap-1">
+                  <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-[#e8e0d8] line-clamp-1">
+                    {day.name}
+                  </p>
+                  <CourseBadge count={count} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Content row */}
+        <div className="relative grid grid-cols-7 bg-white dark:bg-[#292524] -mb-4 sm:-mb-5">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="absolute top-0 bottom-0 w-px bg-gray-200 dark:bg-[#4a4441] pointer-events-none"
+              style={{ left: `${(i / 7) * 100}%` }}
+            />
+          ))}
+
+          {days.map((day) => {
+            const column = columns.find((c) => c.dayCode === day.code);
+            const courses = column?.courses ?? [];
+
+            return (
+              <DesktopColumn
+                key={day.code}
+                dayCode={day.code}
+                courses={courses}
+                onAddClick={() => onAddClick(day.code)}
+                day={day.code}
+                semester={semester}
+                year={year}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}

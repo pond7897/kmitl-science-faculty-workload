@@ -5,8 +5,11 @@ import { Sun, Moon } from "lucide-react";
 
 export function ThemeSwitcher() {
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
+    setMounted(true);
+    
     // Check initial theme and sync <html> class
     const savedTheme = localStorage.getItem('theme');
     const isDark =
@@ -36,10 +39,12 @@ export function ThemeSwitcher() {
     }
   };
 
+  if (!mounted) return null;
+
   return (
     <button 
       onClick={toggleTheme}
-      className="hover:bg-orange-100 dark:hover:bg-sidebar-accent rounded-md p-2 transition-colors text-orange-700 dark:text-sidebar-foreground"
+      className="hover:bg-orange-100 dark:hover:bg-[#3d3533] rounded-md p-2 transition-colors text-orange-700 dark:text-[#f0ebe5]"
       aria-label="Toggle theme"
     >
       {theme === 'light' ? (

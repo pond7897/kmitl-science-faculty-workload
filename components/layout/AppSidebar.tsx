@@ -58,14 +58,14 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-orange-100/60 dark:border-sidebar-border shadow-[2px_0_12px_0_rgba(242,127,13,0.06)] dark:shadow-none"
+      className="border-r border-orange-100/60 dark:border-[#4a4441] shadow-[2px_0_12px_0_rgba(242,127,13,0.06)] dark:shadow-none"
     >
       {/* ── Logo Header ── */}
       <SidebarHeader className="p-3 pb-2">
         <div
           className={`
             relative flex items-center justify-center
-            bg-[#F27F0D] dark:bg-sidebar-accent
+            bg-[#F27F0D] dark:bg-[#C96442]
             rounded-sm overflow-hidden shadow-sm shadow-orange-200/40 dark:shadow-none
             transition-all duration-300 ease-in-out
             ${isCollapsed ? 'w-11 h-11 mx-auto' : 'w-full h-12 px-4'}
@@ -97,7 +97,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       {/* ── thin divider ── */}
-      <div className="mx-3 h-px bg-linear-to-r from-transparent via-orange-200/70 dark:via-sidebar-border to-transparent group-data-[collapsible=icon]:mx-2" />
+      <div className="mx-3 h-px bg-linear-to-r from-transparent via-orange-200/70 dark:via-[#4a4441] to-transparent group-data-[collapsible=icon]:mx-2" />
 
       {/* ── Navigation ── */}
       <SidebarContent className="px-2 py-3">
@@ -114,16 +114,16 @@ export function AppSidebar() {
                   tooltip={t(`Sidebar.${item.key}`)}
                   className={`
                     relative h-11 rounded-md transition-all duration-200
-                    text-[#C46A00] dark:text-sidebar-foreground
-                    hover:bg-orange-50 hover:text-[#F27F0D] dark:hover:bg-sidebar-accent dark:hover:text-primary
-                    data-[active=true]:bg-[#FEF2E7]! dark:data-[active=true]:bg-sidebar-accent!
+                    text-[#C46A00] dark:text-[#e8e0d8]
+                    hover:bg-orange-50 hover:text-[#F27F0D] dark:hover:bg-[#3d3533] dark:hover:text-[#C96442]
+                    data-[active=true]:bg-[#FEF2E7]! dark:data-[active=true]:bg-[#3d3533]!
                     data-[active=true]:from-[unset]!
                     data-[active=true]:to-[unset]!
-                    data-[active=true]:text-[#F27F0D]! dark:data-[active=true]:text-primary!
+                    data-[active=true]:text-[#F27F0D]! dark:data-[active=true]:text-[#C96442]!
                     data-[active=true]:font-semibold!
                     data-[active=true]:shadow-sm!
                     data-[active=true]:shadow-orange-100! dark:data-[active=true]:shadow-none!
-                    data-[active=true]:hover:bg-[#FEF2E7]! dark:data-[active=true]:hover:bg-sidebar-accent!
+                    data-[active=true]:hover:bg-[#FEF2E7]! dark:data-[active=true]:hover:bg-[#3d3533]!
                     data-[active=true]:hover:from-[unset]!
                     data-[active=true]:hover:to-[unset]!
                     group-data-[collapsible=icon]:size-11!
@@ -150,7 +150,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* ── thin divider ── */}
-      <div className="mx-3 h-px bg-linear-to-r from-transparent via-orange-200/70 dark:via-sidebar-border to-transparent group-data-[collapsible=icon]:mx-2" />
+      <div className="mx-3 h-px bg-linear-to-r from-transparent via-orange-200/70 dark:via-[#4a4441] to-transparent group-data-[collapsible=icon]:mx-2" />
 
       {/* ── Logout Button ── */}
       <SidebarFooter className="p-3 pt-2">
@@ -161,9 +161,9 @@ export function AppSidebar() {
               tooltip={t('Sidebar.logout')}
               className={`
                 h-11 rounded-sm font-semibold transition-all duration-200
-                bg-[#F27F0D] dark:bg-primary
+                bg-[#F27F0D] dark:bg-[#C96442]
                 text-white shadow-sm shadow-orange-200/40 dark:shadow-none
-                hover:bg-[#E06C00] dark:hover:bg-primary/80
+                hover:bg-[#E06C00] dark:hover:bg-[#C96442]/80
                 hover:shadow-md hover:shadow-orange-200/40 dark:hover:shadow-none
                 hover:text-white
                 active:scale-[0.98]
