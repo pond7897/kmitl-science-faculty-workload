@@ -174,6 +174,7 @@ export function WorkloadForm({
   const [semester, setSemester] = useState<string>(
     () => searchParams.get("semester") || initialSemester,
   );
+  const [isGridLoading, setIsGridLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 

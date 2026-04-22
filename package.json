@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "bun --bun next dev",
     "prebuild": "prisma generate",
-    "build": "bun --bun next build",
+    "build": "bun --bun next build --webpack",
     "start": "bun --bun next start",
     "lint": "eslint",
     "test:api": "bunx playwright test",
