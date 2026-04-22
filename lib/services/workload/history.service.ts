@@ -347,7 +347,7 @@ export async function getWorkloadHistoryDetailById(
     dayOfWeek: history.schedule.dayOfWeek,
     degree: history.schedule.degree,
     courseName: history.year.section.course.name,
-    courseCode: history.year.section.course.id,
+    courseCode: history.year.section.course.code ?? history.year.section.course.id,
     credits: history.year.section.course.credits,
     faculty: history.year.section.faculty,
     major: history.year.section.major,

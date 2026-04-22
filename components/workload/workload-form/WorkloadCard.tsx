@@ -9,6 +9,8 @@ interface WorkloadCardProps {
   time: string;
   room: string;
   studentCount: number;
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
 export function WorkloadCard({
@@ -17,14 +19,20 @@ export function WorkloadCard({
   time,
   room,
   studentCount,
+  isSelected = false,
+  onSelect,
 }: WorkloadCardProps) {
   const { currentLanguage } = useLanguage();
   const isTh = currentLanguage === 'th';
-
-  return (
-    <div className="rounded-xl border border-orange-200 bg-orange-50 p-3 shadow-sm transition-shadow dark:border-orange-500/25 dark:bg-orange-500/5 dark:shadow-[0_10px_30px_rgba(249,115,22,0.04)] sm:p-4">
-      <div className="border-l-4 border-l-orange-500 pl-3 dark:border-l-orange-400">
-        <p className="line-clamp-1 text-sm font-extrabold text-orange-600 dark:text-orange-300 sm:text-base">
+  const cardClassName = `w-full overflow-hidden rounded-xl border bg-orange-50 text-left shadow-sm transition-all ${
+    isSelected
+      ? 'border-orange-300 border-l-4 border-l-orange-500 dark:border-orange-500/35 dark:border-l-orange-400'
+      : 'border-orange-200 border-l-4 border-l-orange-500/80 hover:border-orange-300 hover:shadow-md dark:border-orange-500/25 dark:border-l-orange-400 dark:hover:border-orange-500/40'
+  } dark:bg-orange-500/5 dark:shadow-[0_10px_30px_rgba(249,115,22,0.04)]`;
+  const content = (
+    <div className="px-3 py-3 sm:px-4 sm:py-4">
+      <div className="pl-1 sm:pl-2">
+        <p className="break-all text-sm font-extrabold text-orange-600 dark:text-orange-300 sm:text-base">
           {courseCode}
         </p>
 
@@ -51,6 +59,24 @@ export function WorkloadCard({
           </div>
         </div>
       </div>
+    </div>
+  );
+
+  if (onSelect) {
+    return (
+      <button
+        type="button"
+        onClick={onSelect}
+        className={`${cardClassName} cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div className={cardClassName}>
+      {content}
     </div>
   );
 }

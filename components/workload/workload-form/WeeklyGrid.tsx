@@ -22,6 +22,8 @@ export type WeeklyGridColumn = DayColumn;
 interface WeeklyGridProps {
   columns: DayColumn[];
   semesterBadge: string;
+  selectedCourseId?: string | null;
+  onCourseSelect?: (courseId: string) => void;
 }
 
 function CourseBadge({ count }: { count: number }) {
@@ -56,9 +58,13 @@ function EmptyDayState({ isTh }: { isTh: boolean }) {
 function DesktopColumn({
   courses,
   isTh,
+  selectedCourseId,
+  onCourseSelect,
 }: {
   courses: DayColumn['courses'];
   isTh: boolean;
+  selectedCourseId?: string | null;
+  onCourseSelect?: (courseId: string) => void;
 }) {
   return (
     <div className="flex flex-col gap-1.5 p-1.5 pb-4">
@@ -71,6 +77,8 @@ function DesktopColumn({
             time={course.time}
             room={course.room}
             studentCount={course.studentCount}
+            isSelected={selectedCourseId === course.id}
+            onSelect={onCourseSelect ? () => onCourseSelect(course.id) : undefined}
           />
         ))
       ) : (
@@ -83,6 +91,8 @@ function DesktopColumn({
 export function WeeklyGrid({
   columns,
   semesterBadge,
+  selectedCourseId,
+  onCourseSelect,
 }: WeeklyGridProps) {
   const { currentLanguage } = useLanguage();
   const isTh = currentLanguage === 'th';
@@ -143,6 +153,8 @@ export function WeeklyGrid({
                       time={course.time}
                       room={course.room}
                       studentCount={course.studentCount}
+                      isSelected={selectedCourseId === course.id}
+                      onSelect={onCourseSelect ? () => onCourseSelect(course.id) : undefined}
                     />
                   ))
                 ) : (
@@ -192,6 +204,8 @@ export function WeeklyGrid({
                   <DesktopColumn
                     courses={courses}
                     isTh={isTh}
+                    selectedCourseId={selectedCourseId}
+                    onCourseSelect={onCourseSelect}
                   />
                 </div>
               );
