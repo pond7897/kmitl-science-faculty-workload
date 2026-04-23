@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft,
@@ -237,6 +238,8 @@ export function WorkloadHistoryDetailContent({
   detail: WorkloadHistoryDetailServiceItem;
 }) {
   const { t, i18n } = useTranslation();
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const detailSectionRef = useRef<HTMLDivElement | null>(null);
   const isEnglish = i18n.language.startsWith('en');
   const activeDay = normalizeDayOfWeek(detail.dayOfWeek);
   const scheduleSessions = [
@@ -263,6 +266,20 @@ export function WorkloadHistoryDetailContent({
         }))
         : [],
   }));
+  const defaultSelectedCourseId =
+    weeklyGridColumns.flatMap((column) => column.courses).at(0)?.id ?? null;
+  const resolvedSelectedCourseId = selectedCourseId ?? defaultSelectedCourseId;
+
+  useEffect(() => {
+    if (!selectedCourseId) {
+      return;
+    }
+
+    detailSectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }, [selectedCourseId]);
 
   return (
     <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-4 pb-8 pt-1 md:gap-5">
@@ -303,10 +320,12 @@ export function WorkloadHistoryDetailContent({
             semester: detail.semester,
             year: detail.year,
           })}
+          selectedCourseId={resolvedSelectedCourseId}
+          onCourseSelect={setSelectedCourseId}
         />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+      <div ref={detailSectionRef} className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-4">
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2">
@@ -346,7 +365,7 @@ export function WorkloadHistoryDetailContent({
           />
         </div>
 
-        <div className="rounded-xl border border-[#F27F0D]/20 bg-[#F27F0D]/5 p-4 shadow-sm">
+        <div className="h-fit rounded-xl border border-[#F27F0D]/20 bg-[#F27F0D]/5 p-4 shadow-sm xl:sticky xl:top-5">
           <div className="flex flex-col gap-3 border-b border-[#F27F0D]/15 pb-4 sm:flex-row sm:items-start sm:justify-between">
             <h2 className="text-base font-medium text-[#F27F0D]">
               {t('WorkloadHistoryDetail.selectedCourse')}
@@ -358,7 +377,7 @@ export function WorkloadHistoryDetailContent({
             <SidebarField label={t('WorkloadHistoryDetail.courseName')} value={detail.courseName} />
             <SidebarField label={t('WorkloadHistoryDetail.courseCode')} value={detail.courseCode} />
 
-            <div className="grid gap-4 grid-cols-2 grid-row-1">
+            <div className="grid grid-cols-2 gap-4">
               <SidebarField label={t('WorkloadHistoryDetail.credits')} value={detail.credits} />
               <SidebarField label={t('WorkloadHistoryDetail.degree')} value={detail.degree} />
               <SidebarField label={t('WorkloadHistoryDetail.theoryTime')} value={theoryTimeText} />
