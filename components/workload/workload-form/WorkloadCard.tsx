@@ -24,10 +24,10 @@ export function WorkloadCard({
 }: WorkloadCardProps) {
   const { currentLanguage } = useLanguage();
   const isTh = currentLanguage === 'th';
-  const cardClassName = `w-full overflow-hidden rounded-xl border bg-orange-50 text-left shadow-sm transition-all ${
+  const cardClassName = `w-full overflow-hidden rounded-xl border bg-orange-50 text-left shadow-sm transition-all duration-200 ${
     isSelected
-      ? 'border-orange-300 border-l-4 border-l-orange-500 dark:border-orange-500/35 dark:border-l-orange-400'
-      : 'border-orange-200 border-l-4 border-l-orange-500/80 hover:border-orange-300 hover:shadow-md dark:border-orange-500/25 dark:border-l-orange-400 dark:hover:border-orange-500/40'
+      ? 'border-orange-300 border-l-4 border-l-orange-500 ring-2 ring-orange-200/80 dark:border-orange-500/35 dark:border-l-orange-400 dark:ring-orange-400/20'
+      : 'border-orange-200 border-l-4 border-l-orange-500/80 hover:-translate-y-0.5 hover:border-orange-300 hover:shadow-md dark:border-orange-500/25 dark:border-l-orange-400 dark:hover:border-orange-500/40'
   } dark:bg-orange-500/5 dark:shadow-[0_10px_30px_rgba(249,115,22,0.04)]`;
   const content = (
     <div className="px-3 py-3 sm:px-4 sm:py-4">
@@ -38,7 +38,7 @@ export function WorkloadCard({
 
         <hr className="my-2 border-orange-200 dark:border-orange-400/15" />
 
-        <p className="mb-2 text-sm font-extrabold leading-snug text-gray-900 dark:text-orange-50 sm:mb-3 sm:text-base">
+        <p className="mb-2 line-clamp-2 text-sm font-extrabold leading-snug text-gray-900 dark:text-orange-50 sm:mb-3 sm:text-base">
           {courseName}
         </p>
 

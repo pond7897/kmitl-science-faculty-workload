@@ -195,7 +195,7 @@ export function WorkloadStatusTimeline({
 
   return (
     <div className="bg-[#FFFBF6] px-5 py-6 dark:bg-[#211B19] md:px-8 lg:px-[50px] lg:py-[30px]">
-      <div className="grid w-fit mx-auto gap-0 md:w-full md:grid-cols-4 md:items-start md:gap-0">
+      <div className="mx-auto grid w-fit gap-0 md:w-full md:grid-cols-4 md:items-start md:gap-0">
         {steps.map((step, index) => {
           const isAlert = step.rejected || step.revision;
           const circleClass = isAlert

@@ -266,6 +266,9 @@ export function WorkloadHistoryDetailContent({
         }))
         : [],
   }));
+  const defaultSelectedCourseId =
+    weeklyGridColumns.flatMap((column) => column.courses).at(0)?.id ?? null;
+  const resolvedSelectedCourseId = selectedCourseId ?? defaultSelectedCourseId;
 
   useEffect(() => {
     if (!selectedCourseId) {
@@ -279,7 +282,7 @@ export function WorkloadHistoryDetailContent({
   }, [selectedCourseId]);
 
   return (
-    <div className="flex w-full flex-col gap-4 pb-8 pt-1 md:gap-5">
+    <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-4 pb-8 pt-1 md:gap-5">
       <div className="flex justify-start">
         <Button asChild variant="outline" className="gap-2 border-[#F27F0D]/20 text-[#F27F0D] hover:bg-orange-50 hover:text-[#F27F0D]">
           <Link href="/workload/history">
@@ -317,140 +320,138 @@ export function WorkloadHistoryDetailContent({
             semester: detail.semester,
             year: detail.year,
           })}
-          selectedCourseId={selectedCourseId}
+          selectedCourseId={resolvedSelectedCourseId}
           onCourseSelect={setSelectedCourseId}
         />
       </div>
 
-      {selectedCourseId ? (
-        <div ref={detailSectionRef} className="space-y-4">
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="space-y-4">
-              <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-[#F27F0D]" />
-                  <h2 className="text-base font-medium text-foreground">
-                    {t('WorkloadHistoryDetail.courseInfo')}
-                  </h2>
-                </div>
-                <div className="mt-3 h-0.5 rounded-full bg-[#F27F0D]" />
-
-                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                  <DetailField label={t('WorkloadHistoryDetail.faculty')} value={detail.faculty} />
-                  <DetailField label={t('WorkloadHistoryDetail.major')} value={detail.major} />
-                  <DetailField label={t('WorkloadHistoryDetail.yearLevel')} value={detail.yearLevel} />
-                  <DetailField label={t('WorkloadHistoryDetail.section')} value={detail.section} />
-                  <DetailField
-                    label={t('WorkloadHistoryDetail.studentsRegistered')}
-                    value={detail.studentsRegistered}
-                  />
-                  <DetailField
-                    label={t('WorkloadHistoryDetail.studentsPerWeek')}
-                    value={detail.studentsPerWeek}
-                  />
-                </div>
-              </div>
-
-              <WeekSelectionCard
-                title={t('WorkloadHistoryDetail.theoryWeeks')}
-                weeks={detail.theoryWeeks}
-                totalWeeks={detail.expectedTheoryWeeks}
-              />
-
-              <WeekSelectionCard
-                title={t('WorkloadHistoryDetail.labWeeks')}
-                weeks={detail.labWeeks}
-                totalWeeks={detail.expectedLabWeeks}
-              />
-            </div>
-
-            <div className="h-fit self-start rounded-xl border border-[#F27F0D]/20 bg-[#F27F0D]/5 p-4 shadow-sm">
-              <div className="flex flex-row items-center justify-between gap-3 border-b border-[#F27F0D]/15 pb-4">
-                <h2 className="text-base font-medium text-[#F27F0D]">
-                  {t('WorkloadHistoryDetail.selectedCourse')}
+      <div ref={detailSectionRef} className="space-y-4">
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="space-y-4">
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-[#F27F0D]" />
+                <h2 className="text-base font-medium text-foreground">
+                  {t('WorkloadHistoryDetail.courseInfo')}
                 </h2>
-                <WorkloadStatusBadge status={detail.status} />
               </div>
+              <div className="mt-3 h-0.5 rounded-full bg-[#F27F0D]" />
 
-              <div className="mt-4 space-y-4">
-                <SidebarField label={t('WorkloadHistoryDetail.courseName')} value={detail.courseName} />
-                <SidebarField label={t('WorkloadHistoryDetail.courseCode')} value={detail.courseCode} />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <SidebarField label={t('WorkloadHistoryDetail.credits')} value={detail.credits} />
-                  <SidebarField label={t('WorkloadHistoryDetail.degree')} value={detail.degree} />
-                  <SidebarField label={t('WorkloadHistoryDetail.theoryTime')} value={theoryTimeText} />
-                  <SidebarField label={t('WorkloadHistoryDetail.labTime')} value={labTimeText} />
-                  <SidebarField
-                    label={t('WorkloadHistoryDetail.theoryHours')}
-                    value={formatHours(detail.totalTheoryHours, isEnglish, hoursUnit, emptyLabel)}
-                  />
-                  <SidebarField
-                    label={t('WorkloadHistoryDetail.labHours')}
-                    value={formatHours(detail.totalLabHours, isEnglish, hoursUnit, emptyLabel)}
-                  />
-                </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <DetailField label={t('WorkloadHistoryDetail.faculty')} value={detail.faculty} />
+                <DetailField label={t('WorkloadHistoryDetail.major')} value={detail.major} />
+                <DetailField label={t('WorkloadHistoryDetail.yearLevel')} value={detail.yearLevel} />
+                <DetailField label={t('WorkloadHistoryDetail.section')} value={detail.section} />
+                <DetailField
+                  label={t('WorkloadHistoryDetail.studentsRegistered')}
+                  value={detail.studentsRegistered}
+                />
+                <DetailField
+                  label={t('WorkloadHistoryDetail.studentsPerWeek')}
+                  value={detail.studentsPerWeek}
+                />
               </div>
             </div>
+
+            <WeekSelectionCard
+              title={t('WorkloadHistoryDetail.theoryWeeks')}
+              weeks={detail.theoryWeeks}
+              totalWeeks={detail.expectedTheoryWeeks}
+            />
+
+            <WeekSelectionCard
+              title={t('WorkloadHistoryDetail.labWeeks')}
+              weeks={detail.labWeeks}
+              totalWeeks={detail.expectedLabWeeks}
+            />
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-            <div className="border-b border-border px-4 py-4 md:px-5">
-              <div className="flex items-center gap-2">
-                <ClipboardList className="h-5 w-5 text-[#F27F0D]" />
-                <h2 className="text-lg font-bold text-[#1E293B] dark:text-[#F5EEE8]">
-                  {t('WorkloadHistoryDetail.processHistory')}
-                </h2>
-              </div>
+          <div className="h-fit rounded-xl border border-[#F27F0D]/20 bg-[#F27F0D]/5 p-4 shadow-sm xl:sticky xl:top-5">
+            <div className="flex flex-col gap-3 border-b border-[#F27F0D]/15 pb-4 sm:flex-row sm:items-start sm:justify-between">
+              <h2 className="text-base font-medium text-[#F27F0D]">
+                {t('WorkloadHistoryDetail.selectedCourse')}
+              </h2>
+              <WorkloadStatusBadge status={detail.status} />
             </div>
 
-            <div className="overflow-x-auto">
-              <Table className="min-w-[760px]">
-                <TableHeader>
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableHead>{t('WorkloadHistoryDetail.historyAction')}</TableHead>
-                    <TableHead>{t('WorkloadHistoryDetail.historyDate')}</TableHead>
-                    <TableHead>{t('WorkloadHistoryDetail.historyStatus')}</TableHead>
-                    <TableHead>{t('WorkloadHistoryDetail.historyActor')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {detail.processes.length === 0 ? (
-                    <TableRow className="hover:bg-transparent">
-                      <TableCell colSpan={4} className="py-10 text-center text-base text-muted-foreground">
-                        {t('WorkloadHistory.noRecords')}
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    detail.processes.map((process) => {
-                      const meta = getProcessMeta(process.type, t);
+            <div className="mt-4 space-y-4">
+              <SidebarField label={t('WorkloadHistoryDetail.courseName')} value={detail.courseName} />
+              <SidebarField label={t('WorkloadHistoryDetail.courseCode')} value={detail.courseCode} />
 
-                      return (
-                        <TableRow key={process.id} className="hover:bg-transparent">
-                          <TableCell className="font-medium text-foreground">
-                            {meta.label}
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {formatHistoryCompactDateTime(process.createdAt, isEnglish)}
-                          </TableCell>
-                          <TableCell>
-                            <span className={cn('inline-flex rounded-full border px-3 py-1 text-xs font-bold', meta.badgeClass)}>
-                              {meta.label}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-foreground">
-                            {process.actorName || t('WorkloadHistoryDetail.actorFallback')}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                  )}
-                </TableBody>
-              </Table>
+              <div className="grid grid-cols-2 gap-4">
+                <SidebarField label={t('WorkloadHistoryDetail.credits')} value={detail.credits} />
+                <SidebarField label={t('WorkloadHistoryDetail.degree')} value={detail.degree} />
+                <SidebarField label={t('WorkloadHistoryDetail.theoryTime')} value={theoryTimeText} />
+                <SidebarField label={t('WorkloadHistoryDetail.labTime')} value={labTimeText} />
+                <SidebarField
+                  label={t('WorkloadHistoryDetail.theoryHours')}
+                  value={formatHours(detail.totalTheoryHours, isEnglish, hoursUnit, emptyLabel)}
+                />
+                <SidebarField
+                  label={t('WorkloadHistoryDetail.labHours')}
+                  value={formatHours(detail.totalLabHours, isEnglish, hoursUnit, emptyLabel)}
+                />
+              </div>
             </div>
           </div>
         </div>
-      ) : null}
+
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          <div className="border-b border-border px-4 py-4 md:px-5">
+            <div className="flex items-center gap-2">
+              <ClipboardList className="h-5 w-5 text-[#F27F0D]" />
+              <h2 className="text-lg font-bold text-[#1E293B] dark:text-[#F5EEE8]">
+                {t('WorkloadHistoryDetail.processHistory')}
+              </h2>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <Table className="min-w-[760px]">
+              <TableHeader>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
+                  <TableHead>{t('WorkloadHistoryDetail.historyAction')}</TableHead>
+                  <TableHead>{t('WorkloadHistoryDetail.historyDate')}</TableHead>
+                  <TableHead>{t('WorkloadHistoryDetail.historyStatus')}</TableHead>
+                  <TableHead>{t('WorkloadHistoryDetail.historyActor')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {detail.processes.length === 0 ? (
+                  <TableRow className="hover:bg-transparent">
+                    <TableCell colSpan={4} className="py-10 text-center text-base text-muted-foreground">
+                      {t('WorkloadHistory.noRecords')}
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  detail.processes.map((process) => {
+                    const meta = getProcessMeta(process.type, t);
+
+                    return (
+                      <TableRow key={process.id} className="hover:bg-transparent">
+                        <TableCell className="font-medium text-foreground">
+                          {meta.label}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {formatHistoryCompactDateTime(process.createdAt, isEnglish)}
+                        </TableCell>
+                        <TableCell>
+                          <span className={cn('inline-flex rounded-full border px-3 py-1 text-xs font-bold', meta.badgeClass)}>
+                            {meta.label}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-foreground">
+                          {process.actorName || t('WorkloadHistoryDetail.actorFallback')}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

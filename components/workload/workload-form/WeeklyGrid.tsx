@@ -47,7 +47,7 @@ function CourseBadge({ count }: { count: number }) {
 
 function EmptyDayState({ isTh }: { isTh: boolean }) {
   return (
-    <div className="flex min-h-28 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-3 text-center dark:border-[#4a4441] dark:bg-[#302826] sm:min-h-32 sm:p-4">
+    <div className="flex min-h-28 items-center justify-center rounded-lg border border-dashed border-[#E8D9CC] bg-[linear-gradient(180deg,#FFFDF9_0%,#FAF5EE_100%)] p-3 text-center dark:border-[#4a4441] dark:bg-[#302826] sm:min-h-32 sm:p-4">
       <p className="text-xs text-gray-500 dark:text-[#8b7f77] sm:text-sm">
         {isTh ? 'ไม่มีข้อมูลภาระงาน' : 'No workload data'}
       </p>
@@ -167,8 +167,8 @@ export function WeeklyGrid({
       </div>
 
       <div className="hidden sm:block">
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-[#4a4441] dark:bg-[#292524]">
-          <div className="grid grid-cols-7 bg-white dark:bg-[#292524]">
+        <div className="overflow-hidden rounded-2xl border border-[#E8D9CC] bg-white shadow-[0_12px_30px_rgba(242,127,13,0.06)] dark:border-[#4a4441] dark:bg-[#292524]">
+          <div className="grid grid-cols-7 bg-[linear-gradient(180deg,#FFF9F2_0%,#FFFFFF_100%)] dark:bg-[#292524]">
             {days.map((day, index) => {
               const column = columns.find((item) => item.dayCode === day.code);
               const count = column?.courses.length ?? 0;
@@ -176,7 +176,7 @@ export function WeeklyGrid({
               return (
                 <div
                   key={day.code}
-                  className={`border-b border-gray-200 py-2 text-center dark:border-[#4a4441] sm:py-3 ${
+                  className={`border-b border-[#E8D9CC] py-2 text-center dark:border-[#4a4441] sm:py-3 ${
                     index !== days.length - 1 ? 'border-r' : ''
                   }`}
                 >
@@ -199,7 +199,7 @@ export function WeeklyGrid({
               return (
                 <div
                   key={day.code}
-                  className={index !== days.length - 1 ? 'border-r border-gray-200 dark:border-[#4a4441]' : ''}
+                  className={index !== days.length - 1 ? 'border-r border-[#F3E5D6] dark:border-[#4a4441]' : ''}
                 >
                   <DesktopColumn
                     courses={courses}
