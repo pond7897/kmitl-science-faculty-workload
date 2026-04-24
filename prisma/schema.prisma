@@ -101,6 +101,7 @@ model AcademicYear {
 
 model Course {
   id      String @id @default(cuid()) @map("courses_id")
+  code    String? @map("courses_code")
   name    String @map("courses_name")
   credits String
 
