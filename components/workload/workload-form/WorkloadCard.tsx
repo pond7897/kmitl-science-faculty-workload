@@ -207,7 +207,7 @@ export function WorkloadCard({
       className={`clickable group relative rounded-xl border border-l-4 p-3 sm:p-4 shadow-sm
     transition-all duration-200 select-none
     ${isInteractive
-      ? 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] active:shadow-sm active:translate-y-0' 
+      ? 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] active:shadow-sm active:translate-y-0'
       : 'cursor-default'
     }
     ${isSelected ? 'ring-2 ring-orange-200/80 dark:ring-orange-400/20' : ''}
