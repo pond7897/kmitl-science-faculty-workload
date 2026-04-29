@@ -53,11 +53,7 @@ export const auth = betterAuth({
   },
 
   plugins: [
-    dash({
-      apiKey: process.env.BETTER_AUTH_API_KEY,
-      // apiUrl: process.env.BETTER_AUTH_API_URL,
-      // kvUrl: process.env.BETTER_AUTH_KV_URL,
-    }),
+    dash(),
     admin()
   ]
 });
