@@ -10,7 +10,7 @@ function fixRequest(req: Request): Request {
   const fixedUrl = `${proto}://${host}${url.pathname}${url.search}`;
 
   const isSignIn = url.pathname.includes('/sign-in');
-  let headers = new Headers(req.headers);
+  const headers = new Headers(req.headers);
   
   if (isSignIn) {
     const cookies = req.headers.get('cookie') || '';

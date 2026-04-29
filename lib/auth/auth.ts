@@ -4,10 +4,13 @@ import { prisma } from './prisma';
 import { dash } from '@better-auth/infra';
 import { admin } from 'better-auth/plugins';
 
+const betterAuthBaseURL =
+  process.env.BETTER_AUTH_BASE_URL ?? process.env.BETTER_AUTH_URL;
+
 // auth.ts
 export const auth = betterAuth({
   appName: "Kmitl Workload",
-  baseURL: process.env.BETTER_AUTH_BASE_URL!,
+  baseURL: betterAuthBaseURL,
   secret: process.env.BETTER_AUTH_SECRET,
 
   database: prismaAdapter(prisma, {
@@ -50,7 +53,11 @@ export const auth = betterAuth({
   },
 
   plugins: [
-    dash(),
+    dash({
+      apiKey: process.env.BETTER_AUTH_API_KEY,
+      apiUrl: process.env.BETTER_AUTH_API_URL,
+      kvUrl: process.env.BETTER_AUTH_KV_URL,
+    }),
     admin()
   ]
 });
