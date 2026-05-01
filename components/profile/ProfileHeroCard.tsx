@@ -4,14 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/hooks/use-language';
 import { Building2, BookOpen } from 'lucide-react';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
+import { formatPositionLabel } from '@/lib/positions';
 import type { UserProfile, UserInfo } from '@/lib/types/auth';
-
-const roleLabels: Record<string, { en: string; th: string }> = {
-  student: { en: 'Student', th: 'นักศึกษา' },
-  faculty: { en: 'Faculty Member', th: 'อาจารย์' },
-  staff: { en: 'Staff', th: 'เจ้าหน้าที่' },
-  admin: { en: 'Administrator', th: 'ผู้ดูแลระบบ' },
-};
 
 interface ProfileHeroCardProps {
   profile: UserProfile;
@@ -28,9 +22,7 @@ export function ProfileHeroCard({ profile, userinfo }: ProfileHeroCardProps) {
     ? `${profile.data.title ?? ''}${profile.data.spacial_title ?? ''}${profile.data.firstname_th ?? ''} ${profile.data.lastname_th ?? ''}`.trim()
     : `${profile.data.spacial_title ?? ''}${profile.data.firstname_en ?? ''} ${profile.data.lastname_en ?? ''}`.trim();
 
-  const academicTitle = isTh
-    ? (profile.data.position_th ?? profile.data.position_en ?? roleLabels[userinfo.data.role?.toLowerCase() ?? '']?.th ?? '')
-    : (profile.data.position_en ?? profile.data.position_th ?? roleLabels[userinfo.data.role?.toLowerCase() ?? '']?.en ?? '');
+  const academicTitle = formatPositionLabel(profile.data.position, isTh ? 'th' : 'en') ?? '';
 
   const facultyName = t('Profile.facultyName');
   const departmentName = isTh

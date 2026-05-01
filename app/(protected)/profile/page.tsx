@@ -20,7 +20,7 @@ export default async function ProfilePage() {
         lastname_th: profile?.data.lastname_th,
         firstname_en: profile?.data.firstname_en,
         lastname_en: profile?.data.lastname_en,
-        position_en: profile?.data.position_en,
+        position: profile?.data.position,
         email: userinfo?.data.email,
       }}
       rawSession={{ profile, userinfo }}

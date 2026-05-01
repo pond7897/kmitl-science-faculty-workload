@@ -3,6 +3,7 @@ import { getAuthSession } from '@/lib/auth/session';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { AppHeader } from '@/components/layout/AppHeader';
+import { formatPositionLabel } from '@/lib/positions';
 
 type Props = {
   children: React.ReactNode;
@@ -28,14 +29,8 @@ export default async function ProtectedLayout({ children }: Props) {
     role:
       session.profile?.data.role ||
       session.userinfo?.data.role ||
-      session.profile?.data.position_en ||
-      'Faculty Member',
-    position:
-      session.profile?.data.position_en ||
-      session.profile?.data.position_th ||
-      session.profile?.data.role ||
-      session.userinfo?.data.role ||
-      'Faculty Member',
+      'staff',
+    position: formatPositionLabel(session.profile?.data.position, 'en') || 'Faculty Member',
     avatar: session.profile?.data.avatar_url,
   };
 

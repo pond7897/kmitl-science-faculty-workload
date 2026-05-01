@@ -10,8 +10,7 @@ export interface UserProfile {
     spacial_title?: string;
     gender?: string;
     birth_date?: string | null;
-    position_en?: string;
-    position_th?: string;
+    position?: string | null;
     department?: {
       id: string;
       name_th: string;

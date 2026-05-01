@@ -1,5 +1,7 @@
 import { headers as nextHeaders } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
+import { prisma } from '@/lib/auth/prisma';
+import { formatPositionLabel } from '@/lib/positions';
 import type { AuthSession, AppUser } from '@/lib/types/auth';
 
 export async function getAuthSession(): Promise<AuthSession | null> {
@@ -19,36 +21,56 @@ export async function getAuthSession(): Promise<AuthSession | null> {
       lastname_en?: string | null;
       firstname_th?: string | null;
       lastname_th?: string | null;
-      position_en?: string | null;
       role?: string | null;
     };
 
-    const ROLES = {
-      'admin': 'Administrator',
-      'faculty': 'Faculty Member',
-      'head_of_depart': 'Head of Department',
-    }
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        firstname_en: true,
+        lastname_en: true,
+        firstname_th: true,
+        lastname_th: true,
+        image: true,
+        role: true,
+        position: true,
+        department: {
+          select: {
+            id: true,
+            nameEn: true,
+            nameTh: true,
+          },
+        },
+      },
+    });
 
-    const roleLabel = ROLES[userData.role as keyof typeof ROLES] || 'Faculty Member';
+    const role = dbUser?.role ?? userData.role ?? 'staff';
 
     return {
       profile: {
         data: {
-          firstname_en: userData.firstname_en || user.name || '',
-          lastname_en: userData.lastname_en || '',
-          firstname_th: userData.firstname_th || user.name || '',
-          lastname_th: userData.lastname_th || '',
-          position_en: userData.position_en || roleLabel,
-          role: userData.role || 'faculty',
-          avatar_url: user.image || '',
+          firstname_en: dbUser?.firstname_en || userData.firstname_en || user.name || '',
+          lastname_en: dbUser?.lastname_en || userData.lastname_en || '',
+          firstname_th: dbUser?.firstname_th || userData.firstname_th || user.name || '',
+          lastname_th: dbUser?.lastname_th || userData.lastname_th || '',
+          position: dbUser?.position ?? null,
+          role,
+          avatar_url: dbUser?.image || user.image || '',
+          department: dbUser?.department
+            ? {
+                id: dbUser.department.id,
+                name_en: dbUser.department.nameEn,
+                name_th: dbUser.department.nameTh,
+              }
+            : undefined,
         },
       },
       userinfo: {
         data: {
           id: user.id,
           email: user.email,
-          avatar: user.image,
-          role: userData.role || 'faculty',
+          avatar: dbUser?.image || user.image,
+          role,
         },
       },
     } as AuthSession;
@@ -69,9 +91,9 @@ export async function getAppUser(): Promise<AppUser | null> {
   
   return {
     name: `${profile?.data.firstname_en || 'User'} ${profile?.data.lastname_en || ''}`.trim(),
-    role: profile?.data.role || profile?.data.position_en || 'Faculty Member',
+    role: profile?.data.role || 'staff',
     avatar: profile?.data.avatar_url,
-    position: profile?.data.position_en || profile?.data.role || 'Faculty Member',
+    position: formatPositionLabel(profile?.data.position, 'en') || 'Faculty Member',
   };
 }
 

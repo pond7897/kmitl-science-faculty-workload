@@ -3,14 +3,8 @@
 import { useLanguage } from '@/hooks/use-language';
 import { ProfileHeroCard } from '@/components/profile/ProfileHeroCard';
 import { ProfileInfoCard } from '@/components/profile/ProfileInfoCard';
+import { formatPositionLabel } from '@/lib/positions';
 import type { UserProfile, UserInfo } from '@/lib/types/auth';
-
-const roleLabels: Record<string, { en: string; th: string }> = {
-  student: { en: 'Student', th: 'นักศึกษา' },
-  faculty: { en: 'Faculty Member', th: 'อาจารย์' },
-  staff: { en: 'Staff', th: 'เจ้าหน้าที่' },
-  admin: { en: 'Administrator', th: 'ผู้ดูแลระบบ' },
-};
 
 interface ProfileContentProps {
   data: {
@@ -18,7 +12,7 @@ interface ProfileContentProps {
     lastname_th?: string;
     firstname_en?: string;
     lastname_en?: string;
-    position_en?: string;
+    position?: string | null;
     email?: string;
   };
   rawSession?: {
@@ -37,7 +31,7 @@ export function ProfileContent({ data, rawSession }: ProfileContentProps) {
       lastname_en: data.lastname_en ?? '',
       firstname_th: data.firstname_th ?? '',
       lastname_th: data.lastname_th ?? '',
-      position_en: data.position_en,
+      position: data.position,
     },
   };
 
@@ -48,14 +42,7 @@ export function ProfileContent({ data, rawSession }: ProfileContentProps) {
   const isTh = currentLanguage === 'th';
 
   // ── Personal-info fields ──────────────────────────────────────────────────
-  const roleKey = (userinfo.data.role ?? '').toLowerCase();
-  const positionFallback = isTh
-    ? (roleLabels[roleKey]?.th ?? undefined)
-    : (roleLabels[roleKey]?.en ?? undefined);
-
-  const positionValue = isTh
-    ? (profile.data.position_th ?? profile.data.position_en ?? positionFallback)
-    : (profile.data.position_en ?? profile.data.position_th ?? positionFallback);
+  const positionValue = formatPositionLabel(profile.data.position, isTh ? 'th' : 'en');
 
   const employeeId = userinfo.data.id as string | undefined;
 
