@@ -32,6 +32,8 @@ export type WeeklyGridColumn = DayColumn;
 interface WeeklyGridProps {
   columns: DayColumn[];
   semesterBadge: string;
+  selectedCourseId?: string | null;
+  onCourseSelect?: (courseId: string) => void;
   onAddClick?: (dayCode: string) => void;
   onEditClick?: (dayCode: string, courseId: string) => void;
   onRemoveClick?: (dayCode: string, courseId: string) => void;
@@ -84,6 +86,8 @@ function DesktopColumn({
   day,
   semester,
   year,
+  selectedCourseId,
+  onCourseSelect,
 }: {
   dayCode: string;
   courses: DayColumn['courses'];
@@ -91,6 +95,8 @@ function DesktopColumn({
   day?: string;
   semester?: string;
   year?: string;
+  selectedCourseId?: string | null;
+  onCourseSelect?: (courseId: string) => void;
 }) {
   const { t } = useTranslation();
 
@@ -114,6 +120,8 @@ function DesktopColumn({
                 year={year}
                 lectureWeeks={course.lectureWeeks}
                 labWeeks={course.labWeeks}
+                isSelected={selectedCourseId === course.id}
+                onSelect={onCourseSelect ? () => onCourseSelect(course.id) : undefined}
               />
             ))}
           </div>
@@ -143,6 +151,8 @@ function DesktopColumn({
 export function WeeklyGrid({
   columns,
   semesterBadge,
+  selectedCourseId,
+  onCourseSelect,
   onAddClick,
   semester,
   year,
@@ -223,6 +233,8 @@ export function WeeklyGrid({
                             year={year}
                             lectureWeeks={course.lectureWeeks}
                             labWeeks={course.labWeeks}
+                            isSelected={selectedCourseId === course.id}
+                            onSelect={onCourseSelect ? () => onCourseSelect(course.id) : undefined}
                           />
                         ))}
                         {onAddClick && (
@@ -294,6 +306,8 @@ export function WeeklyGrid({
                 day={day.code}
                 semester={semester}
                 year={year}
+                selectedCourseId={selectedCourseId}
+                onCourseSelect={onCourseSelect}
               />
             );
           })}

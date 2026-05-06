@@ -9,7 +9,9 @@
     "start": "bun --bun next start",
     "lint": "eslint",
     "test:api": "bunx playwright test",
-    "test:screenshots": "bunx playwright test tests/login-screenshots.spec.ts"
+    "test:screenshots": "bunx playwright test tests/login-screenshots.spec.ts",
+    "bun:generate": "bunx prisma generate",
+    "bun:migrate": "bunx prisma migrate dev"
   },
   "dependencies": {
     "@better-auth/infra": "^0.1.13",

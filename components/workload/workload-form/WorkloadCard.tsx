@@ -29,6 +29,8 @@ interface WorkloadCardProps {
   lectureWeeks?: number[];
   /** Array of selected lab week numbers (1–15) */
   labWeeks?: number[];
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
 type StatusConfig = {
@@ -163,6 +165,8 @@ export function WorkloadCard({
   lectureWeeks = [],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   labWeeks = [],
+  isSelected = false,
+  onSelect,
 }: WorkloadCardProps) {
   const router = useRouter();
   // Fallback to 'draft' if status is not found in statusConfig
@@ -170,6 +174,8 @@ export function WorkloadCard({
     statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
 
   const isEditable = status === 'draft' && Boolean(id);
+  const isSelectable = Boolean(onSelect);
+  const isInteractive = isSelectable || isEditable;
 
   const handleEdit = () => {
     // Only allow editing if status is 'draft'
@@ -186,15 +192,25 @@ export function WorkloadCard({
     router.push(`/workload/entry?${queryParams.toString()}`);
   };
 
+  const handleClick = () => {
+    if (onSelect) {
+      onSelect();
+      return;
+    }
+
+    handleEdit();
+  };
+
   return (
     <div
-      onClick={handleEdit}
+      onClick={handleClick}
       className={`clickable group relative rounded-xl border border-l-4 p-3 sm:p-4 shadow-sm
     transition-all duration-200 select-none
-    ${isEditable 
-      ? 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] active:shadow-sm active:translate-y-0' 
+    ${isInteractive
+      ? 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] active:shadow-sm active:translate-y-0'
       : 'cursor-default'
     }
+    ${isSelected ? 'ring-2 ring-orange-200/80 dark:ring-orange-400/20' : ''}
     ${statusInfo.cardBgColor} ${statusInfo.cardBorderColor} ${statusInfo.cardBorderLeftColor}
     ${statusInfo.textColor} dark:shadow-[0_10px_30px_rgba(0,0,0,0.1)]`}
     >
@@ -240,7 +256,7 @@ export function WorkloadCard({
       </div>
 
       {/* ── Action Buttons & Status Badge ── */}
-      {status !== "draft" && (
+      {status !== "draft" && !isSelectable && (
         <div
           className={`flex flex-col gap-2 pt-2 sm:pt-3 border-t z-10 ${statusInfo.dividerColor}`}
         >
